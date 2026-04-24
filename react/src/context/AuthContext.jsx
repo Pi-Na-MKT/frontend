@@ -1,49 +1,80 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
+import axios from 'axios'
 
 const AuthContext = createContext(null)
 
-// Mock users — simula um backend
-const MOCK_USERS = [
-  { id: 1, email: 'admin@pina.com', senha: '123456', nome: 'Ana Souza', avatar: 'https://i.pravatar.cc/40?img=5', cargo: 'Gerente de Marketing' },
-  { id: 2, email: 'user@pina.com',  senha: '123456', nome: 'Carlos Lima',  avatar: 'https://i.pravatar.cc/40?img=8', cargo: 'Analista de Campanhas' },
-]
+// Instância base do Axios — token JWT injetado automaticamente em toda requisição
+const api = axios.create({ baseURL: 'http://localhost:8080/api' })
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token')
+  if (token) config.headers.Authorization = `Bearer ${token}`
+  return config
+})
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(true) // para verificar sessão salva
+  const [user, setUser]                     = useState(null)
+  const [loading, setLoading]               = useState(true)
+  const [registeredUsers, setRegisteredUsers] = useState([])
 
-  // Ao montar, verifica se há sessão salva
+  // Restaura sessão ao recarregar a página
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem('pina_user')
-      if (saved) setUser(JSON.parse(saved))
-    } catch {
-      localStorage.removeItem('pina_user')
-    } finally {
-      setLoading(false)
+    const token  = localStorage.getItem('token')
+    const nome   = localStorage.getItem('name')
+    const userId = localStorage.getItem('userId')
+
+    if (token && nome) {
+      setUser({ id: userId, nome, token })
+      // Já busca a lista de usuários com o token salvo
+      fetchUsers()
     }
+    setLoading(false)
   }, [])
 
-  const login = async (email, senha) => {
-    // Simula latência de rede
-    await new Promise(r => setTimeout(r, 900))
-
-    const found = MOCK_USERS.find(u => u.email === email && u.senha === senha)
-    if (!found) throw new Error('E-mail ou senha inválidos.')
-
-    const { senha: _, ...safeUser } = found
-    setUser(safeUser)
-    localStorage.setItem('pina_user', JSON.stringify(safeUser))
-    return safeUser
+  // Busca lista de usuários do backend (rota protegida — precisa de token)
+  const fetchUsers = async () => {
+    try {
+      const { data } = await api.get('/users')
+      // O backend retorna "name" — normaliza para "nome" usado no frontend
+      const normalizado = data.map(u => ({
+        ...u,
+        nome: u.name ?? u.nome,
+      }))
+      setRegisteredUsers(normalizado)
+    } catch (err) {
+      console.error('Erro ao buscar usuários:', err)
+    }
   }
 
+  // ── LOGIN ────────────────────────────────────────────────────────────────
+  const login = async (email, senha) => {
+    const { data } = await api.post('/users/login', { email, password: senha })
+
+    // Persiste token e dados básicos no localStorage
+    localStorage.setItem('token',  data.token)
+    localStorage.setItem('userId', String(data.userId))
+    localStorage.setItem('name',   data.name)
+
+    const loggedUser = { id: data.userId, nome: data.name, token: data.token }
+    setUser(loggedUser)
+
+    // Carrega a lista de usuários logo após o login
+    await fetchUsers()
+
+    return loggedUser
+  }
+
+  // ── LOGOUT ───────────────────────────────────────────────────────────────
   const logout = () => {
+    localStorage.removeItem('token')
+    localStorage.removeItem('userId')
+    localStorage.removeItem('name')
     setUser(null)
-    localStorage.removeItem('pina_user')
+    setRegisteredUsers([])
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, logout, loading, registeredUsers, fetchUsers }}>
       {children}
     </AuthContext.Provider>
   )

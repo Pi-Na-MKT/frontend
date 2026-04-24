@@ -1,15 +1,24 @@
 import React, { useState } from 'react'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Login from './pages/Login'
+import Cadastro from './pages/Cadastro'
+import Usuarios from './pages/Usuarios'
 import AppLayout from './layouts/AppLayout'
 import Empresas from './pages/Empresas'
 import Tarefas from './pages/Tarefas'
 import Dashboard from './pages/Dashboard'
 
 const PAGES = {
-  EMPRESAS: 'empresas',
-  TAREFAS: 'tarefas',
-  DASHBOARD: 'dashboard',
+  EMPRESAS:         'empresas',
+  TAREFAS:          'tarefas',
+  DASHBOARD:        'dashboard',
+  USUARIOS:         'usuarios',
+  CADASTRO_USUARIO: 'cadastro_usuario',
+}
+
+const AUTH_VIEWS = {
+  LOGIN:    'login',
+  CADASTRO: 'cadastro',
 }
 
 function AppContent() {
@@ -31,33 +40,71 @@ function AppContent() {
     )
   }
 
-  return <AuthGate page={page} setPage={setPage} selectedEmpresa={selectedEmpresa} setSelectedEmpresa={setSelectedEmpresa} />
+  return (
+    <AuthGate
+      page={page}
+      setPage={setPage}
+      selectedEmpresa={selectedEmpresa}
+      setSelectedEmpresa={setSelectedEmpresa}
+    />
+  )
 }
 
 function AuthGate({ page, setPage, selectedEmpresa, setSelectedEmpresa }) {
-  const { user } = useAuth()
+  const { user, login } = useAuth()
+  const [authView, setAuthView] = useState(AUTH_VIEWS.LOGIN)
 
-  if (!user) return <Login />
+  // ── Usuário NÃO logado ──────────────────────────────────────────────────
+  if (!user) {
+    if (authView === AUTH_VIEWS.CADASTRO) {
+      return <Cadastro onGoToLogin={() => setAuthView(AUTH_VIEWS.LOGIN)} />
+    }
+    return (
+      <Login
+        onGoToRegister={() => setAuthView(AUTH_VIEWS.CADASTRO)}
+      />
+    )
+  }
 
-  const goToTarefas   = (empresa) => { setSelectedEmpresa(empresa); setPage(PAGES.TAREFAS) }
-  const goToDashboard = () => setPage(PAGES.DASHBOARD)
-  const goToEmpresas  = () => { setPage(PAGES.EMPRESAS); setSelectedEmpresa(null) }
-  const goToTarefasBack = () => setPage(PAGES.TAREFAS)
+  // ── Usuário logado ──────────────────────────────────────────────────────
+  const goToTarefas         = (empresa) => { setSelectedEmpresa(empresa); setPage(PAGES.TAREFAS) }
+  const goToDashboard       = () => setPage(PAGES.DASHBOARD)
+  const goToEmpresas        = () => { setPage(PAGES.EMPRESAS); setSelectedEmpresa(null) }
+  const goToUsuarios        = () => setPage(PAGES.USUARIOS)
+  const goToTarefasBack     = () => setPage(PAGES.TAREFAS)
+  const goToCadastroUsuario = () => setPage(PAGES.CADASTRO_USUARIO)
 
   const handleSidebarNav = (id) => {
-    if (id === PAGES.EMPRESAS) goToEmpresas()
+    if (id === PAGES.EMPRESAS)       goToEmpresas()
     else if (id === PAGES.DASHBOARD) goToDashboard()
+    else if (id === PAGES.USUARIOS)  goToUsuarios()
   }
 
   const searchPlaceholder =
-    page === PAGES.EMPRESAS ? 'Buscar empresas...' :
-    page === PAGES.TAREFAS  ? 'Buscar tarefas, campanhas ou clientes...' : 'Buscar...'
+    page === PAGES.EMPRESAS ? 'Buscar empresas...'  :
+    page === PAGES.TAREFAS  ? 'Buscar tarefas, campanhas ou clientes...' :
+    page === PAGES.USUARIOS ? 'Buscar usuários...'  : 'Buscar...'
+
+  // Cadastro de usuário acessado de dentro do app (gestor)
+  if (page === PAGES.CADASTRO_USUARIO) {
+    return (
+      <Cadastro
+        onGoToLogin={goToUsuarios}
+        isInternalAccess
+      />
+    )
+  }
 
   return (
-    <AppLayout activePage={page} onNavigate={handleSidebarNav} searchPlaceholder={searchPlaceholder}>
-      {page === PAGES.EMPRESAS && <Empresas onEmpresaClick={goToTarefas} />}
-      {page === PAGES.TAREFAS  && <Tarefas empresa={selectedEmpresa} onBack={goToEmpresas} onDashboard={goToDashboard} />}
+    <AppLayout
+      activePage={page}
+      onNavigate={handleSidebarNav}
+      searchPlaceholder={searchPlaceholder}
+    >
+      {page === PAGES.EMPRESAS  && <Empresas onEmpresaClick={goToTarefas} />}
+      {page === PAGES.TAREFAS   && <Tarefas empresa={selectedEmpresa} onBack={goToEmpresas} onDashboard={goToDashboard} />}
       {page === PAGES.DASHBOARD && <Dashboard empresa={selectedEmpresa} onBack={goToTarefasBack} />}
+      {page === PAGES.USUARIOS  && <Usuarios onCadastrarNovo={goToCadastroUsuario} />}
     </AppLayout>
   )
 }
