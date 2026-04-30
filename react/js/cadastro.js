@@ -1,87 +1,61 @@
-function pegarDadosFormulario(){
+function pegarDadosFormulario() {
     return {
-
-        nome: inp_nome.value.trim(),
-        email: inp_email.value.trim(),
-        senha: inp_senha.value.trim(),
-        empresa: inp_empresa.value.trim(),
-        cnpj: inp_cnpj.value.trim(),
-        cargo: inp_cargo.value.trim(),
-        telefone: inp_telefone.value.trim(),
-        dataCadastro: new Date().toISOString(),
-        ativo: true
-
+        name: inp_nome.value.trim(),
+        email: inp_email.value.trim().toLowerCase(),
+        password: inp_senha.value.trim(),
+        jobTitle: inp_cargo.value.trim(),
+        phone: inp_telefone.value.trim()
     };
 }
 
-function validarCampos(usuario){
-
+function validarCampos(usuario) {
     const regexSenha = /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,}$/;
     const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if(!usuario.nome || !usuario.email || !usuario.senha ||
-       !usuario.empresa || !usuario.cnpj || !usuario.cargo || !usuario.telefone){
-
-        return "Preencha todos os campos.";
+    if (!usuario.name || !usuario.email || !usuario.password || 
+        !usuario.jobTitle || !usuario.phone || !usuario.seniority || !usuario.department) {
+        return "Preencha todos os campos, incluindo senioridade e departamento.";
     }
 
-    if(usuario.email !== usuario.email.toLowerCase()){
-        return "O email não pode conter letras maiúsculas.";
-    }
-
-    if(!regexEmail.test(usuario.email)){
+    if (!regexEmail.test(usuario.email)) {
         return "Email inválido.";
     }
 
-    if(!regexSenha.test(usuario.senha)){
+    if (!regexSenha.test(usuario.password)) {
         return "Senha inválida. Deve ter 8 caracteres, uma letra maiúscula e um caractere especial.";
     }
 
     return null;
 }
-async function verificarEmail(email){
 
-    const resposta = await fetch(`http://localhost:8080/usuarios?email=${email}`);
-    const usuarios = await resposta.json();
-
-    return usuarios.length > 0;
-
-}
-
-async function cadastrar(){
-
+async function cadastrar() {
     const usuario = pegarDadosFormulario();
 
     const erro = validarCampos(usuario);
-    if(erro){
+    if (erro) {
         msg.innerHTML = erro;
         return;
     }
 
-    const emailExiste = await verificarEmail(usuario.email);
-    if(emailExiste){
-        msg.innerHTML = "Este email já está cadastrado.";
-        return;
+    try {
+        const resposta = await fetch("http://localhost:8080/api/users/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(usuario)
+        });
+
+        if (resposta.ok) {
+            msg.innerHTML = "Cadastro realizado com sucesso!";
+            setTimeout(() => {
+                window.location.href = "login.html";
+            }, 1500);
+        } else {
+            const erroApi = await resposta.json();
+            msg.innerHTML = erroApi.detail || "Erro ao cadastrar. Tente novamente.";
+        }
+    } catch (error) {
+        msg.innerHTML = "Erro de conexão com o servidor.";
     }
-
-    const resposta = await fetch("http://localhost:8080/usuarios", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(usuario)
-    });
-
-    if(resposta.ok){
-
-        msg.innerHTML = "Cadastro realizado com sucesso";
-
-        setTimeout(()=>{
-            window.location.href = "login.html";
-        },1500)
-
-    }else{
-        msg.innerHTML = "Erro ao cadastrar";
-    }
-
 }
