@@ -5,21 +5,21 @@ const api = axios.create({ baseURL: 'http://localhost:8080/api/' })
 
 // ─── Dados estáticos ──────────────────────────────────────────────────────
 const NIVEIS = [
-  { value: 'gestor',      label: 'Gestor',      icon: '🎯', desc: 'Acesso total ao sistema' },
+  { value: 'gestor', label: 'Gestor', icon: '🎯', desc: 'Acesso total ao sistema' },
   { value: 'colaborador', label: 'Colaborador', icon: '🤝', desc: 'Acesso padrão às tarefas' },
-  { value: 'analista',    label: 'Analista',    icon: '📊', desc: 'Foco em relatórios e dados' },
-  { value: 'estagiario',  label: 'Estagiário',  icon: '🌱', desc: 'Acesso supervisionado' },
+  { value: 'analista', label: 'Analista', icon: '📊', desc: 'Foco em relatórios e dados' },
+  { value: 'estagiario', label: 'Estagiário', icon: '🌱', desc: 'Acesso supervisionado' },
 ]
 
-const EQUIPES = ['Estratégia','Performance','Conteúdo','Design','SEO','Social Media','CRM','Dados & Analytics']
+const EQUIPES = ['Estratégia', 'Performance', 'Conteúdo', 'Design', 'SEO', 'Social Media', 'CRM', 'Dados & Analytics']
 
-const CANAIS = ['Instagram','Facebook','Google Ads','LinkedIn','TikTok','E-mail Marketing','YouTube','Pinterest']
+const CANAIS = ['Instagram', 'Facebook', 'Google Ads', 'LinkedIn', 'TikTok', 'E-mail Marketing', 'YouTube', 'Pinterest']
 
 const SENIORIDADE = [
   { value: 'junior', label: 'Júnior', years: '0–2 anos' },
-  { value: 'pleno',  label: 'Pleno',  years: '2–5 anos' },
+  { value: 'pleno', label: 'Pleno', years: '2–5 anos' },
   { value: 'senior', label: 'Sênior', years: '5–10 anos' },
-  { value: 'lead',   label: 'Lead',   years: '10+ anos' },
+  { value: 'lead', label: 'Lead', years: '10+ anos' },
 ]
 
 // ─── Helpers ──────────────────────────────────────────────────────────────
@@ -44,7 +44,7 @@ function Field({ label, error, hint, children }) {
       {error && (
         <p className="mt-1 text-xs flex items-center gap-1" style={{ color: '#f87171' }}>
           <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           {error}
         </p>
@@ -61,14 +61,14 @@ function PasswordStrength({ senha }) {
     /[^A-Za-z0-9]/.test(senha),
   ]
   const score = checks.filter(Boolean).length
-  const colors = ['#374151','#ef4444','#f59e0b','#10b981','#5B4FE8']
-  const labels = ['','Fraca','Razoável','Boa','Forte']
+  const colors = ['#374151', '#ef4444', '#f59e0b', '#10b981', '#5B4FE8']
+  const labels = ['', 'Fraca', 'Razoável', 'Boa', 'Forte']
   return senha ? (
     <div className="mt-2">
       <div className="flex gap-1 mb-1">
-        {[1,2,3,4].map(i => (
+        {[1, 2, 3, 4].map(i => (
           <div key={i} className="h-1 flex-1 rounded-full transition-all duration-300"
-            style={{ background: i <= score ? colors[score] : 'rgba(255,255,255,0.07)' }}/>
+            style={{ background: i <= score ? colors[score] : 'rgba(255,255,255,0.07)' }} />
         ))}
       </div>
       <p className="text-xs" style={{ color: colors[score] }}>{labels[score]}</p>
@@ -78,16 +78,16 @@ function PasswordStrength({ senha }) {
 
 // ─── Componente principal ─────────────────────────────────────────────────
 export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
-  const [step, setStep]         = useState(0)
-  const [dir, setDir]           = useState(1)
-  const [anim, setAnim]         = useState(false)
-  const [mounted, setMounted]   = useState(false)
-  const [loading, setLoading]   = useState(false)
-  const [sucesso, setSucesso]   = useState(false)
+  const [step, setStep] = useState(0)
+  const [dir, setDir] = useState(1)
+  const [anim, setAnim] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [sucesso, setSucesso] = useState(false)
   const [erroGlobal, setErroGlobal] = useState('')
-  const [focused, setFocused]   = useState(null)
-  const [erros, setErros]       = useState({})
-  const [showSenha, setShowSenha]         = useState(false)
+  const [focused, setFocused] = useState(null)
+  const [erros, setErros] = useState({})
+  const [showSenha, setShowSenha] = useState(false)
   const [showConfirmar, setShowConfirmar] = useState(false)
   const [usuarioCriado, setUsuarioCriado] = useState(null)
 
@@ -152,31 +152,32 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
     try {
       // Monta o payload no formato que o backend espera
       const payload = {
-        name:     form.nome,
-        email:    form.email,
+        name: form.nome,
+        email: form.email,
         password: form.senha,
-        // Campos extras — ficam prontos para quando você expandir a entidade User
-        phone:          form.telefone,
-        role:           form.nivelAcesso,
-        seniority:      form.senioridade,
-        position:       form.cargo,
-        team:           form.equipe,
+
+        phone: form.telefone,
+
+        jobTitle: form.cargo,
+        department: form.equipe,
+        seniority: form.senioridade,
+
+        role: form.nivelAcesso?.toUpperCase(),
+
         responsibility: form.responsabilidade,
-        bio:            form.bio,
-        linkedin:       form.linkedin,
-        channels:       form.canais,
+        bio: form.bio,
+        linkedin: form.linkedin,
       }
 
       const { data } = await api.post('/users/register', payload)
 
-      // Normaliza a resposta para exibir na tela de sucesso
       const criado = {
         ...data,
-        nome:        data.name     ?? form.nome,
-        email:       data.email    ?? form.email,
-        cargo:       data.position ?? form.cargo,
-        nivelAcesso: data.role     ?? form.nivelAcesso,
-        equipe:      data.team     ?? form.equipe,
+        nome: data.name ?? form.nome,
+        email: data.email ?? form.email,
+        cargo: data.position ?? form.cargo,
+        nivelAcesso: data.role ?? form.nivelAcesso,
+        equipe: data.team ?? form.equipe,
       }
 
       setUsuarioCriado(criado)
@@ -195,13 +196,13 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
     setSucesso(false)
     setStep(0)
     setForm({
-      nome:'', email:'', telefone:'', senha:'', confirmarSenha:'',
-      cargo:'', senioridade:'', nivelAcesso:'', equipe:'',
-      responsabilidade:'', canais:[], bio:'', linkedin:'',
+      nome: '', email: '', telefone: '', senha: '', confirmarSenha: '',
+      cargo: '', senioridade: '', nivelAcesso: '', equipe: '',
+      responsabilidade: '', canais: [], bio: '', linkedin: '',
     })
   }
 
-  const STEPS = ['Conta','Perfil','Detalhes']
+  const STEPS = ['Conta', 'Perfil', 'Detalhes']
 
   // ── Tela de sucesso ──────────────────────────────────────────────────────
   if (sucesso) {
@@ -211,11 +212,11 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
         <div className="text-center max-w-sm">
           <div className="relative mx-auto w-20 h-20 mb-6">
             <div className="absolute inset-0 rounded-full animate-ping opacity-20"
-              style={{ background: 'linear-gradient(135deg, #5B4FE8, #a78bfa)' }}/>
+              style={{ background: 'linear-gradient(135deg, #5B4FE8, #a78bfa)' }} />
             <div className="relative w-20 h-20 rounded-full flex items-center justify-center"
               style={{ background: 'linear-gradient(135deg, #5B4FE8, #a78bfa)' }}>
               <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
               </svg>
             </div>
           </div>
@@ -229,8 +230,8 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
             style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
             {[
               ['E-mail', usuarioCriado?.email],
-              ['Cargo',  usuarioCriado?.cargo],
-              ['Nível',  NIVEIS.find(n => n.value === usuarioCriado?.nivelAcesso)?.label],
+              ['Cargo', usuarioCriado?.cargo],
+              ['Nível', NIVEIS.find(n => n.value === usuarioCriado?.nivelAcesso)?.label],
               ['Equipe', usuarioCriado?.equipe],
             ].map(([k, v]) => v && (
               <div key={k} className="flex justify-between py-1.5 border-b last:border-0"
@@ -266,19 +267,19 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
       {/* ── Painel esquerdo ── */}
       <div className="hidden lg:flex lg:w-[42%] relative overflow-hidden flex-col">
         <div className="absolute inset-0"
-          style={{ background: 'linear-gradient(160deg, #0f0c29 0%, #302b63 60%, #1a1040 100%)' }}/>
+          style={{ background: 'linear-gradient(160deg, #0f0c29 0%, #302b63 60%, #1a1040 100%)' }} />
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute w-[500px] h-[500px] rounded-full opacity-20"
-            style={{ background: 'radial-gradient(circle, #5B4FE8 0%, transparent 70%)', top: '-80px', left: '-80px' }}/>
+            style={{ background: 'radial-gradient(circle, #5B4FE8 0%, transparent 70%)', top: '-80px', left: '-80px' }} />
           <div className="absolute w-[400px] h-[400px] rounded-full opacity-10"
-            style={{ background: 'radial-gradient(circle, #a78bfa 0%, transparent 70%)', bottom: '0', right: '-60px' }}/>
+            style={{ background: 'radial-gradient(circle, #a78bfa 0%, transparent 70%)', bottom: '0', right: '-60px' }} />
           <svg className="absolute inset-0 w-full h-full opacity-[0.04]">
             <defs>
               <pattern id="grid2" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="0.5"/>
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="0.5" />
               </pattern>
             </defs>
-            <rect width="100%" height="100%" fill="url(#grid2)"/>
+            <rect width="100%" height="100%" fill="url(#grid2)" />
           </svg>
         </div>
 
@@ -288,7 +289,7 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
               <div className="w-9 h-9 rounded-xl flex items-center justify-center"
                 style={{ background: 'linear-gradient(135deg, #5B4FE8, #a78bfa)' }}>
                 <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
               <span className="text-2xl font-bold text-white">PiNa</span>
@@ -298,16 +299,16 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
           <div className="flex-1 flex flex-col justify-center">
             <div className={`transition-all duration-500 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
               <div className="inline-flex items-center gap-2 mb-5">
-                <div className="w-5 h-px" style={{ background: 'linear-gradient(90deg, #5B4FE8, transparent)' }}/>
+                <div className="w-5 h-px" style={{ background: 'linear-gradient(90deg, #5B4FE8, transparent)' }} />
                 <span className="text-xs font-semibold tracking-widest uppercase" style={{ color: '#a78bfa' }}>
                   Passo {step + 1} de {STEPS.length}
                 </span>
               </div>
 
               <h1 className="text-4xl font-bold text-white leading-tight mb-4">
-                {step === 0 && <><span style={{ background: 'linear-gradient(135deg,#a78bfa,#38bdf8)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>Crie</span> sua<br/>conta de acesso</>}
-                {step === 1 && <>Defina seu<br/><span style={{ background: 'linear-gradient(135deg,#a78bfa,#38bdf8)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>perfil</span> profissional</>}
-                {step === 2 && <>Seus<br/><span style={{ background: 'linear-gradient(135deg,#a78bfa,#38bdf8)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>canais</span> e expertise</>}
+                {step === 0 && <><span style={{ background: 'linear-gradient(135deg,#a78bfa,#38bdf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Crie</span> sua<br />conta de acesso</>}
+                {step === 1 && <>Defina seu<br /><span style={{ background: 'linear-gradient(135deg,#a78bfa,#38bdf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>perfil</span> profissional</>}
+                {step === 2 && <>Seus<br /><span style={{ background: 'linear-gradient(135deg,#a78bfa,#38bdf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>canais</span> e expertise</>}
               </h1>
               <p className="text-sm leading-relaxed" style={{ color: '#6b7280' }}>
                 {step === 0 && 'Configure suas credenciais de acesso seguro à plataforma PiNa.'}
@@ -326,14 +327,14 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
                       color: i <= step ? '#fff' : '#6b7280',
                     }}>
                     {i < step
-                      ? <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7"/></svg>
+                      ? <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
                       : i + 1
                     }
                   </div>
                   <div>
                     <p className="text-sm font-semibold" style={{ color: i === step ? '#fff' : '#6b7280' }}>{s}</p>
                     <p className="text-xs" style={{ color: '#374151' }}>
-                      {['Dados pessoais e acesso','Cargo, equipe e nível','Canais e bio'][i]}
+                      {['Dados pessoais e acesso', 'Cargo, equipe e nível', 'Canais e bio'][i]}
                     </p>
                   </div>
                 </div>
@@ -348,7 +349,7 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
       {/* ── Painel direito: formulário ── */}
       <div className="flex-1 flex items-center justify-center p-8 relative overflow-hidden">
         <div className="absolute pointer-events-none"
-          style={{ width:'500px', height:'500px', background:'radial-gradient(circle, rgba(91,79,232,0.06) 0%, transparent 70%)', top:'50%', left:'50%', transform:'translate(-50%,-50%)' }}/>
+          style={{ width: '500px', height: '500px', background: 'radial-gradient(circle, rgba(91,79,232,0.06) 0%, transparent 70%)', top: '50%', left: '50%', transform: 'translate(-50%,-50%)' }} />
 
         <div className={`relative z-10 w-full max-w-[420px] transition-all duration-700 delay-100 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
 
@@ -358,7 +359,7 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
               <div className="w-7 h-7 rounded-lg flex items-center justify-center"
                 style={{ background: 'linear-gradient(135deg,#5B4FE8,#a78bfa)' }}>
                 <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
               <span className="font-bold text-white">PiNa</span>
@@ -370,7 +371,7 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
           <div className="mb-7">
             <div className="h-1 rounded-full mb-4 overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
               <div className="h-full rounded-full transition-all duration-500"
-                style={{ width: `${((step + 1) / STEPS.length) * 100}%`, background: 'linear-gradient(90deg, #5B4FE8, #a78bfa)' }}/>
+                style={{ width: `${((step + 1) / STEPS.length) * 100}%`, background: 'linear-gradient(90deg, #5B4FE8, #a78bfa)' }} />
             </div>
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-bold text-white">{STEPS[step]}</h2>
@@ -392,7 +393,7 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
                     onChange={e => set('nome', e.target.value)}
                     onFocus={() => setFocused('nome')} onBlur={() => setFocused(null)}
                     placeholder="Ex.: Lucas Ferreira" autoComplete="name"
-                    className={baseInput} style={inputStyle(focused === 'nome', erros.nome)}/>
+                    className={baseInput} style={inputStyle(focused === 'nome', erros.nome)} />
                 </Field>
 
                 <Field label="E-mail" error={erros.email}>
@@ -400,7 +401,7 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
                     onChange={e => set('email', e.target.value)}
                     onFocus={() => setFocused('email')} onBlur={() => setFocused(null)}
                     placeholder="lucas@empresa.com" autoComplete="email"
-                    className={baseInput} style={inputStyle(focused === 'email', erros.email)}/>
+                    className={baseInput} style={inputStyle(focused === 'email', erros.email)} />
                 </Field>
 
                 <Field label="Telefone" hint="opcional">
@@ -408,7 +409,7 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
                     onChange={e => set('telefone', e.target.value)}
                     onFocus={() => setFocused('tel')} onBlur={() => setFocused(null)}
                     placeholder="(11) 99999-9999"
-                    className={baseInput} style={inputStyle(focused === 'tel', false)}/>
+                    className={baseInput} style={inputStyle(focused === 'tel', false)} />
                 </Field>
 
                 <div className="grid grid-cols-2 gap-3">
@@ -419,16 +420,16 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
                         onChange={e => set('senha', e.target.value)}
                         onFocus={() => setFocused('senha')} onBlur={() => setFocused(null)}
                         placeholder="••••••" autoComplete="new-password"
-                        className={`${baseInput} pr-10`} style={inputStyle(focused === 'senha', erros.senha)}/>
+                        className={`${baseInput} pr-10`} style={inputStyle(focused === 'senha', erros.senha)} />
                       <button type="button" onClick={() => setShowSenha(v => !v)}
                         className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: '#4b5563' }}>
                         {showSenha
-                          ? <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/></svg>
-                          : <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                          ? <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
+                          : <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                         }
                       </button>
                     </div>
-                    <PasswordStrength senha={form.senha}/>
+                    <PasswordStrength senha={form.senha} />
                   </Field>
 
                   <Field label="Confirmar" error={erros.confirmarSenha}>
@@ -438,12 +439,12 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
                         onChange={e => set('confirmarSenha', e.target.value)}
                         onFocus={() => setFocused('conf')} onBlur={() => setFocused(null)}
                         placeholder="••••••" autoComplete="new-password"
-                        className={`${baseInput} pr-10`} style={inputStyle(focused === 'conf', erros.confirmarSenha)}/>
+                        className={`${baseInput} pr-10`} style={inputStyle(focused === 'conf', erros.confirmarSenha)} />
                       <button type="button" onClick={() => setShowConfirmar(v => !v)}
                         className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: '#4b5563' }}>
                         {showConfirmar
-                          ? <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/></svg>
-                          : <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                          ? <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
+                          : <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                         }
                       </button>
                     </div>
@@ -460,7 +461,7 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
                     onChange={e => set('cargo', e.target.value)}
                     onFocus={() => setFocused('cargo')} onBlur={() => setFocused(null)}
                     placeholder="Ex.: Analista de Marketing Digital"
-                    className={baseInput} style={inputStyle(focused === 'cargo', erros.cargo)}/>
+                    className={baseInput} style={inputStyle(focused === 'cargo', erros.cargo)} />
                 </Field>
 
                 <Field label="Senioridade">
@@ -544,7 +545,7 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
                     onFocus={() => setFocused('resp')} onBlur={() => setFocused(null)}
                     placeholder="Ex.: Gerenciar campanhas de tráfego pago e relatórios semanais..."
                     rows={2} className="w-full px-4 py-3 rounded-xl text-sm placeholder-gray-600 resize-none"
-                    style={inputStyle(focused === 'resp', false)}/>
+                    style={inputStyle(focused === 'resp', false)} />
                 </Field>
 
                 <Field label="Bio curta" hint="opcional">
@@ -553,7 +554,7 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
                     onFocus={() => setFocused('bio')} onBlur={() => setFocused(null)}
                     placeholder="Conte um pouco sobre sua trajetória profissional..."
                     rows={2} className="w-full px-4 py-3 rounded-xl text-sm placeholder-gray-600 resize-none"
-                    style={inputStyle(focused === 'bio', false)}/>
+                    style={inputStyle(focused === 'bio', false)} />
                 </Field>
 
                 <Field label="LinkedIn" hint="opcional">
@@ -566,7 +567,7 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
                       onFocus={() => setFocused('li')} onBlur={() => setFocused(null)}
                       placeholder="seu-perfil"
                       className="w-full pl-[120px] pr-4 py-3 rounded-xl text-sm placeholder-gray-600"
-                      style={inputStyle(focused === 'li', false)}/>
+                      style={inputStyle(focused === 'li', false)} />
                   </div>
                 </Field>
 
@@ -574,7 +575,7 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
                   <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl text-sm"
                     style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: '#f87171' }}>
                     <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     {erroGlobal}
                   </div>
@@ -590,7 +591,7 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
                 className="flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold transition-all"
                 style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#9ca3af' }}>
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7"/>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
                 Voltar
               </button>
@@ -602,7 +603,7 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
                 style={{ background: 'linear-gradient(135deg,#5B4FE8,#7c6ff7)', boxShadow: '0 0 25px rgba(91,79,232,0.3)' }}>
                 Continuar
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </button>
             ) : (
@@ -612,8 +613,8 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
                 {loading ? (
                   <>
                     <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                     </svg>
                     Cadastrando...
                   </>
@@ -621,7 +622,7 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
                   <>
                     Criar conta
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"/>
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   </>
                 )}
