@@ -1,16 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 
 const api = axios.create({ baseURL: 'http://localhost:8080/api/' })
 
 // ─── Dados estáticos ──────────────────────────────────────────────────────
-const NIVEIS = [
-  { value: 'gestor', label: 'Gestor', icon: '🎯', desc: 'Acesso total ao sistema' },
-  { value: 'colaborador', label: 'Colaborador', icon: '🤝', desc: 'Acesso padrão às tarefas' },
-  { value: 'analista', label: 'Analista', icon: '📊', desc: 'Foco em relatórios e dados' },
-  { value: 'estagiario', label: 'Estagiário', icon: '🌱', desc: 'Acesso supervisionado' },
-]
-
 const EQUIPES = ['Estratégia', 'Performance', 'Conteúdo', 'Design', 'SEO', 'Social Media', 'CRM', 'Dados & Analytics']
 
 const CANAIS = ['Instagram', 'Facebook', 'Google Ads', 'LinkedIn', 'TikTok', 'E-mail Marketing', 'YouTube', 'Pinterest']
@@ -76,6 +69,49 @@ function PasswordStrength({ senha }) {
   ) : null
 }
 
+// ─── Avatar Upload ────────────────────────────────────────────────────────
+function AvatarUpload({ preview, onFile }) {
+  const inputRef = useRef(null)
+  return (
+    <div className="flex flex-col items-center gap-3 mb-2">
+      <div
+        className="relative w-20 h-20 rounded-full cursor-pointer group"
+        onClick={() => inputRef.current?.click()}
+        style={{ border: '2px dashed rgba(91,79,232,0.5)' }}
+      >
+        {preview ? (
+          <img src={preview} alt="avatar" className="w-full h-full rounded-full object-cover" />
+        ) : (
+          <div className="w-full h-full rounded-full flex flex-col items-center justify-center"
+            style={{ background: 'rgba(91,79,232,0.08)' }}>
+            <svg className="w-6 h-6 mb-1" style={{ color: '#5B4FE8' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            <span className="text-[9px]" style={{ color: '#5B4FE8' }}>Foto</span>
+          </div>
+        )}
+        <div className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </div>
+      </div>
+      <p className="text-xs" style={{ color: '#6b7280' }}>Clique para enviar sua foto</p>
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={e => {
+          const file = e.target.files?.[0]
+          if (file) onFile(file)
+        }}
+      />
+    </div>
+  )
+}
+
 // ─── Componente principal ─────────────────────────────────────────────────
 export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
   const [step, setStep] = useState(0)
@@ -90,11 +126,13 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
   const [showSenha, setShowSenha] = useState(false)
   const [showConfirmar, setShowConfirmar] = useState(false)
   const [usuarioCriado, setUsuarioCriado] = useState(null)
+  const [avatarPreview, setAvatarPreview] = useState(null)
+  const [avatarFile, setAvatarFile] = useState(null)
 
   const [form, setForm] = useState({
     nome: '', email: '', telefone: '',
     senha: '', confirmarSenha: '',
-    cargo: '', senioridade: '', nivelAcesso: '',
+    cargo: '', senioridade: '',
     equipe: '', responsabilidade: '',
     canais: [], bio: '', linkedin: '',
   })
@@ -114,6 +152,13 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
     }))
   }
 
+  const handleAvatarFile = (file) => {
+    setAvatarFile(file)
+    const reader = new FileReader()
+    reader.onload = e => setAvatarPreview(e.target.result)
+    reader.readAsDataURL(file)
+  }
+
   const validarEtapa = (s) => {
     const e = {}
     if (s === 0) {
@@ -128,7 +173,6 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
     }
     if (s === 1) {
       if (!form.cargo.trim()) e.cargo = 'Cargo é obrigatório.'
-      if (!form.nivelAcesso) e.nivelAcesso = 'Selecione um nível.'
       if (!form.equipe) e.equipe = 'Selecione uma equipe.'
     }
     return e
@@ -150,20 +194,14 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
     setErroGlobal('')
     setLoading(true)
     try {
-      // Monta o payload no formato que o backend espera
       const payload = {
         name: form.nome,
         email: form.email,
         password: form.senha,
-
         phone: form.telefone,
-
         jobTitle: form.cargo,
         department: form.equipe,
         seniority: form.senioridade,
-
-        role: form.nivelAcesso?.toUpperCase(),
-
         responsibility: form.responsabilidade,
         bio: form.bio,
         linkedin: form.linkedin,
@@ -176,8 +214,8 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
         nome: data.name ?? form.nome,
         email: data.email ?? form.email,
         cargo: data.position ?? form.cargo,
-        nivelAcesso: data.role ?? form.nivelAcesso,
         equipe: data.team ?? form.equipe,
+        avatar: avatarPreview,
       }
 
       setUsuarioCriado(criado)
@@ -195,9 +233,11 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
   const resetForm = () => {
     setSucesso(false)
     setStep(0)
+    setAvatarPreview(null)
+    setAvatarFile(null)
     setForm({
       nome: '', email: '', telefone: '', senha: '', confirmarSenha: '',
-      cargo: '', senioridade: '', nivelAcesso: '', equipe: '',
+      cargo: '', senioridade: '', equipe: '',
       responsabilidade: '', canais: [], bio: '', linkedin: '',
     })
   }
@@ -213,12 +253,16 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
           <div className="relative mx-auto w-20 h-20 mb-6">
             <div className="absolute inset-0 rounded-full animate-ping opacity-20"
               style={{ background: 'linear-gradient(135deg, #5B4FE8, #a78bfa)' }} />
-            <div className="relative w-20 h-20 rounded-full flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg, #5B4FE8, #a78bfa)' }}>
-              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
+            {usuarioCriado?.avatar ? (
+              <img src={usuarioCriado.avatar} className="relative w-20 h-20 rounded-full object-cover border-2 border-purple-500" alt="avatar" />
+            ) : (
+              <div className="relative w-20 h-20 rounded-full flex items-center justify-center"
+                style={{ background: 'linear-gradient(135deg, #5B4FE8, #a78bfa)' }}>
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+            )}
           </div>
 
           <h2 className="text-2xl font-bold text-white mb-2">Usuário criado!</h2>
@@ -231,7 +275,6 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
             {[
               ['E-mail', usuarioCriado?.email],
               ['Cargo', usuarioCriado?.cargo],
-              ['Nível', NIVEIS.find(n => n.value === usuarioCriado?.nivelAcesso)?.label],
               ['Equipe', usuarioCriado?.equipe],
             ].map(([k, v]) => v && (
               <div key={k} className="flex justify-between py-1.5 border-b last:border-0"
@@ -264,7 +307,7 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
     <div style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif", background: '#0A0A0F' }}
       className="min-h-screen w-full flex overflow-hidden">
 
-      {/* ── Painel esquerdo ── */}
+      {/* ── Painel esquerdo (clean) ── */}
       <div className="hidden lg:flex lg:w-[42%] relative overflow-hidden flex-col">
         <div className="absolute inset-0"
           style={{ background: 'linear-gradient(160deg, #0f0c29 0%, #302b63 60%, #1a1040 100%)' }} />
@@ -301,19 +344,18 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
               <div className="inline-flex items-center gap-2 mb-5">
                 <div className="w-5 h-px" style={{ background: 'linear-gradient(90deg, #5B4FE8, transparent)' }} />
                 <span className="text-xs font-semibold tracking-widest uppercase" style={{ color: '#a78bfa' }}>
-                  Passo {step + 1} de {STEPS.length}
+                  Novo usuário
                 </span>
               </div>
 
               <h1 className="text-4xl font-bold text-white leading-tight mb-4">
-                {step === 0 && <><span style={{ background: 'linear-gradient(135deg,#a78bfa,#38bdf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Crie</span> sua<br />conta de acesso</>}
-                {step === 1 && <>Defina seu<br /><span style={{ background: 'linear-gradient(135deg,#a78bfa,#38bdf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>perfil</span> profissional</>}
-                {step === 2 && <>Seus<br /><span style={{ background: 'linear-gradient(135deg,#a78bfa,#38bdf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>canais</span> e expertise</>}
+                Crie seu<br />
+                <span style={{ background: 'linear-gradient(135deg,#a78bfa,#38bdf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                  perfil
+                </span>
               </h1>
               <p className="text-sm leading-relaxed" style={{ color: '#6b7280' }}>
-                {step === 0 && 'Configure suas credenciais de acesso seguro à plataforma PiNa.'}
-                {step === 1 && 'Ajude o gestor a entender seu papel e responsabilidades na equipe.'}
-                {step === 2 && 'Últimos detalhes para personalizar sua experiência na plataforma.'}
+                Preencha seus dados para acessar a plataforma e começar a colaborar com a equipe.
               </p>
             </div>
 
@@ -334,7 +376,7 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
                   <div>
                     <p className="text-sm font-semibold" style={{ color: i === step ? '#fff' : '#6b7280' }}>{s}</p>
                     <p className="text-xs" style={{ color: '#374151' }}>
-                      {['Dados pessoais e acesso', 'Cargo, equipe e nível', 'Canais e bio'][i]}
+                      {['Dados pessoais e foto', 'Cargo e equipe', 'Canais e bio'][i]}
                     </p>
                   </div>
                 </div>
@@ -388,6 +430,9 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
             {/* ── ETAPA 0 ── */}
             {step === 0 && (
               <div className="flex flex-col gap-4">
+                {/* Upload de foto */}
+                <AvatarUpload preview={avatarPreview} onFile={handleAvatarFile} />
+
                 <Field label="Nome completo" error={erros.nome}>
                   <input type="text" value={form.nome}
                     onChange={e => set('nome', e.target.value)}
@@ -475,25 +520,6 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
                         }}>
                         <span className="text-[11px] font-semibold" style={{ color: form.senioridade === s.value ? '#a78bfa' : '#9ca3af' }}>{s.label}</span>
                         <span className="text-[9px] mt-0.5" style={{ color: '#374151' }}>{s.years}</span>
-                      </button>
-                    ))}
-                  </div>
-                </Field>
-
-                <Field label="Nível de acesso" error={erros.nivelAcesso}>
-                  <div className="grid grid-cols-2 gap-2">
-                    {NIVEIS.map(n => (
-                      <button key={n.value} type="button" onClick={() => set('nivelAcesso', n.value)}
-                        className="flex items-start gap-2.5 px-3 py-2.5 rounded-xl text-left transition-all duration-200"
-                        style={{
-                          background: form.nivelAcesso === n.value ? 'rgba(91,79,232,0.12)' : 'rgba(255,255,255,0.04)',
-                          border: `1.5px solid ${form.nivelAcesso === n.value ? '#5B4FE8' : 'rgba(255,255,255,0.07)'}`,
-                        }}>
-                        <span className="text-base leading-none mt-0.5">{n.icon}</span>
-                        <div>
-                          <p className="text-xs font-semibold" style={{ color: form.nivelAcesso === n.value ? '#c4b5fd' : '#9ca3af' }}>{n.label}</p>
-                          <p className="text-[10px] leading-tight mt-0.5" style={{ color: '#374151' }}>{n.desc}</p>
-                        </div>
                       </button>
                     ))}
                   </div>

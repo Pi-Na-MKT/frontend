@@ -1,39 +1,25 @@
 import React from 'react'
 
-const EmpresaCard = ({ empresa, onClick }) => {
+export default function EmpresaCard({ empresa, onClick }) {
   return (
     <div
       onClick={() => onClick(empresa)}
-      className="bg-white rounded-2xl p-5 border border-gray-100 hover:border-primary/30 hover:shadow-md transition-all cursor-pointer group"
+      className="bg-white rounded-2xl border border-gray-100 p-6 cursor-pointer group card-hover"
     >
-      {/* Header */}
-      <div className="flex items-center gap-4 mb-4">
-        <div className={`${empresa.cor} w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-sm flex-shrink-0`}>
+      <div className="flex items-center gap-4">
+        <div className={`${empresa.cor} w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-base shadow-sm flex-shrink-0`}>
           {empresa.inicial}
         </div>
-        <div>
-          <h3 className="font-semibold text-gray-900 group-hover:text-primary transition-colors">{empresa.nome}</h3>
-          <p className="text-sm text-gray-500">Campanhas ativas: {empresa.campanhasAtivas}</p>
+        <div className="flex-1 min-w-0">
+          <h3 className="font-semibold text-gray-900 text-base group-hover:text-primary transition-colors truncate">{empresa.nome}</h3>
+          <p className="text-sm text-gray-400 mt-0.5">
+            {empresa.tarefas} tarefas · {empresa.campanhasAtivas} ativa{empresa.campanhasAtivas !== 1 ? 's' : ''}
+          </p>
         </div>
-      </div>
-
-      {/* Stats */}
-      <div className="flex items-center gap-5 text-sm text-gray-500">
-        <div className="flex items-center gap-1.5">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-          </svg>
-          <span>{empresa.tarefas} tarefas</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-          </svg>
-          <span>{empresa.campanhas} campanhas</span>
-        </div>
+        <svg className="w-4 h-4 text-gray-300 group-hover:text-primary transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/>
+        </svg>
       </div>
     </div>
   )
 }
-
-export default EmpresaCard

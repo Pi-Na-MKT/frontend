@@ -95,27 +95,14 @@ export default function Login({ onGoToRegister }) {
               </span>
             </div>
             <h1 className="text-5xl font-bold text-white leading-[1.1] mb-5">
-              Transforme dados<br/>
+              Bem-vindo<br/>
               <span style={{ background: 'linear-gradient(135deg, #a78bfa, #38bdf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                em resultados
+                de volta
               </span>
             </h1>
             <p className="text-white/50 text-base leading-relaxed max-w-sm">
-              Gerencie campanhas, equipes e métricas de marketing em uma plataforma unificada.
+              Acesse sua plataforma de gestão de marketing e continue de onde parou.
             </p>
-
-            <div className="flex gap-8 mt-10">
-              {[
-                { n: '12+',  label: 'Campanhas ativas' },
-                { n: '2.8k', label: 'Leads gerados' },
-                { n: '312%', label: 'ROI médio' },
-              ].map(({ n, label }) => (
-                <div key={label}>
-                  <p className="text-2xl font-bold text-white">{n}</p>
-                  <p className="text-white/40 text-xs mt-0.5">{label}</p>
-                </div>
-              ))}
-            </div>
           </div>
 
           <p className="text-white/20 text-xs">© {new Date().getFullYear()} PiNa · Todos os direitos reservados</p>
