@@ -35,10 +35,12 @@ export function AuthProvider({ children }) {
   const fetchUsers = async () => {
     try {
       const { data } = await api.get('/users')
-      // O backend retorna "name" — normaliza para "nome" usado no frontend
+      // O backend retorna "name", "jobTitle", "department" — normaliza para os campos usados no frontend
       const normalizado = data.map(u => ({
         ...u,
-        nome: u.name ?? u.nome,
+        nome:   u.name       ?? u.nome,
+        cargo:  u.jobTitle   ?? u.cargo,
+        equipe: u.department ?? u.equipe,
       }))
       setRegisteredUsers(normalizado)
     } catch (err) {

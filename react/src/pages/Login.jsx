@@ -231,22 +231,6 @@ export default function Login({ onGoToRegister }) {
             <div className="flex-1 h-px" style={{ background: 'rgba(255,255,255,0.06)' }}/>
           </div>
 
-          {/* Demo hint */}
-          <div className="rounded-xl px-4 py-3 flex items-start gap-3 mb-5"
-            style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-            <div className="w-5 h-5 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
-              style={{ background: 'rgba(91,79,232,0.2)' }}>
-              <svg className="w-3 h-3" style={{ color: '#a78bfa' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-            </div>
-            <div>
-              <p className="text-xs font-medium mb-0.5" style={{ color: '#9ca3af' }}>Credenciais demo</p>
-              <p className="text-xs font-mono" style={{ color: '#4b5563' }}>
-                admin@pina.com · <span style={{ color: '#5B4FE8' }}>123456</span>
-              </p>
-            </div>
-          </div>
 
           {onGoToRegister && (
             <p className="text-center text-sm" style={{ color: '#4b5563' }}>
