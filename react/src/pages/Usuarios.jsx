@@ -1,5 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react'
+import axios from 'axios'
 import { useAuth } from '../context/AuthContext'
+
+const api = axios.create({ baseURL: 'http://localhost:8080/api/' })
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token')
+  if (token) config.headers.Authorization = `Bearer ${token}`
+  return config
+})
 
 const STATUS_CFG = {
   ativo:   { label: 'Ativo',   cls: 'status-ativo'   },
@@ -117,6 +126,8 @@ export default function Usuarios({ onCadastrarNovo }) {
   const [carregando,  setCarregando]  = useState(false)
   const [editando,    setEditando]    = useState(null)
   const [confirmDel,  setConfirmDel]  = useState(null)
+  const [erroDelete,  setErroDelete]  = useState(null)
+  const [excluindo,   setExcluindo]   = useState(false)
 
   useEffect(() => { setCarregando(true); fetchUsers().finally(() => setCarregando(false)) }, [])
   useEffect(() => { setLista(registeredUsers.map(u => ({ ...u }))) }, [registeredUsers])
@@ -263,7 +274,28 @@ export default function Usuarios({ onCadastrarNovo }) {
         </div>
       )}
 
-      {editando && <ModalEditar usuario={editando} onSalvar={u => { setLista(p => p.map(x => (x.id || x.email) === (u.id || u.email) ? u : x)); setEditando(null) }} onFechar={() => setEditando(null)}/>}
+      {editando && <ModalEditar usuario={editando} onSalvar={async (u) => {
+        try {
+          const payload = {
+            name:           u.nome || u.name || '',
+            email:          u.email || '',
+            jobTitle:       u.cargo || u.jobTitle || '',
+            department:     u.equipe || u.department || '',
+            phone:          u.phone || '',
+            seniority:      u.seniority || '',
+            responsibility: u.responsibility || '',
+            bio:            u.bio || '',
+            linkedin:       u.linkedin || '',
+            roleId:         u.roleId || null,
+          }
+          const { data } = await api.put(`users/${u.id}`, payload)
+          const atualizado = { ...u, ...data, nome: data.name ?? u.nome, cargo: data.jobTitle ?? u.cargo, equipe: data.department ?? u.equipe }
+          setLista(p => p.map(x => x.id === u.id ? atualizado : x))
+          setEditando(null)
+        } catch (err) {
+          console.error('Erro ao editar usuário:', err)
+        }
+      }} onFechar={() => setEditando(null)}/>}
 
       {confirmDel && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
@@ -277,11 +309,31 @@ export default function Usuarios({ onCadastrarNovo }) {
             <p className="text-sm text-gray-500 text-center mb-5">
               "<span className="font-semibold">{confirmDel.nome || confirmDel.name}</span>" será removido permanentemente.
             </p>
+            {erroDelete && (
+              <p className="text-xs text-red-500 text-center mb-3 bg-red-50 rounded-lg py-2 px-3">{erroDelete}</p>
+            )}
             <div className="flex gap-3">
-              <button onClick={() => setConfirmDel(null)} className="btn-ghost flex-1 justify-center">Cancelar</button>
-              <button onClick={() => { setLista(p => p.filter(u => (u.id || u.email) !== (confirmDel.id || confirmDel.email))); setConfirmDel(null) }}
-                className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white bg-red-500 hover:bg-red-600 transition-colors">
-                Excluir
+              <button onClick={() => { setConfirmDel(null); setErroDelete(null) }} disabled={excluindo} className="btn-ghost flex-1 justify-center">Cancelar</button>
+              <button onClick={async () => {
+                  if (!confirmDel?.id) { setErroDelete('ID do usuário inválido.'); return }
+                  setExcluindo(true)
+                  setErroDelete(null)
+                  try {
+                    await api.delete(`users/${confirmDel.id}`)
+                    setConfirmDel(null)
+                    setErroDelete(null)
+                    await fetchUsers()
+                  } catch (err) {
+                    const msg = err.response?.data?.detail || err.response?.data?.message || `Erro ${err.response?.status || ''}: não foi possível excluir.`
+                    setErroDelete(msg)
+                    console.error('Erro ao excluir usuário:', err.response?.status, err.response?.data)
+                  } finally {
+                    setExcluindo(false)
+                  }
+                }}
+                disabled={excluindo}
+                className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white bg-red-500 hover:bg-red-600 transition-colors disabled:opacity-60">
+                {excluindo ? 'Excluindo...' : 'Excluir'}
               </button>
             </div>
           </div>
