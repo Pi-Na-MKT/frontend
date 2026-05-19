@@ -11,8 +11,7 @@ const CANAIS = ['Instagram', 'Facebook', 'Google Ads', 'LinkedIn', 'TikTok', 'E-
 const SENIORIDADE = [
   { value: 'junior', label: 'Júnior', years: '0–2 anos' },
   { value: 'pleno', label: 'Pleno', years: '2–5 anos' },
-  { value: 'senior', label: 'Sênior', years: '5–10 anos' },
-  { value: 'lead', label: 'Lead', years: '10+ anos' },
+  { value: 'senior', label: 'Sênior', years: '5–10 anos' }
 ]
 
 // ─── Helpers ──────────────────────────────────────────────────────────────
@@ -133,7 +132,7 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
     nome: '', email: '', telefone: '',
     senha: '', confirmarSenha: '',
     cargo: '', senioridade: '',
-    equipe: '', responsabilidade: '',
+    equipe: '',
     canais: [], bio: '', linkedin: '',
   })
 
@@ -202,7 +201,6 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
         jobTitle: form.cargo,
         department: form.equipe,
         seniority: form.senioridade,
-        responsibility: form.responsabilidade,
         bio: form.bio,
         linkedin: form.linkedin,
       }
@@ -238,7 +236,7 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
     setForm({
       nome: '', email: '', telefone: '', senha: '', confirmarSenha: '',
       cargo: '', senioridade: '', equipe: '',
-      responsabilidade: '', canais: [], bio: '', linkedin: '',
+      canais: [], bio: '', linkedin: '',
     })
   }
 
@@ -546,7 +544,7 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
             {/* ── ETAPA 2 ── */}
             {step === 2 && (
               <div className="flex flex-col gap-4">
-                <Field label="Canais de especialidade" hint="Selecione os que domina">
+                <Field label="Habilidades" hint="Selecione os que domina">
                   <div className="flex flex-wrap gap-1.5">
                     {CANAIS.map(c => {
                       const sel = form.canais.includes(c)
@@ -564,16 +562,7 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
                     })}
                   </div>
                 </Field>
-
-                <Field label="Responsabilidades principais" hint="opcional">
-                  <textarea value={form.responsabilidade}
-                    onChange={e => set('responsabilidade', e.target.value)}
-                    onFocus={() => setFocused('resp')} onBlur={() => setFocused(null)}
-                    placeholder="Ex.: Gerenciar campanhas de tráfego pago e relatórios semanais..."
-                    rows={2} className="w-full px-4 py-3 rounded-xl text-sm placeholder-gray-600 resize-none"
-                    style={inputStyle(focused === 'resp', false)} />
-                </Field>
-
+                
                 <Field label="Bio curta" hint="opcional">
                   <textarea value={form.bio}
                     onChange={e => set('bio', e.target.value)}
