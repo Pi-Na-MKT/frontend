@@ -1,5 +1,6 @@
-import React, { useState, useRef } from 'react'
-import { empresas } from '../data/mockData'
+import React, { useState, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
+import { useAuth } from '../context/AuthContext'
 
 const TIPOS = {
   pdf:   { label: 'PDF',    bg: 'bg-red-50',     text: 'text-red-600',     border: 'border-red-100',     icon: (
@@ -41,21 +42,6 @@ function formatDate(d) {
   return `${day}/${m}/${y}`
 }
 
-const anexosMock = {
-  1: [
-    { id: 1, nome: 'Contrato_Aurora_2026.pdf',  tamanho: 204800,  data: '2026-03-10', autor: 'Ana Lima' },
-    { id: 2, nome: 'Logo_Aurora.png',            tamanho: 512000,  data: '2026-02-15', autor: 'Carlos Souza' },
-    { id: 3, nome: 'Briefing_Q2.docx',           tamanho: 92160,   data: '2026-04-01', autor: 'Mariana Costa' },
-  ],
-  2: [
-    { id: 4, nome: 'Relatorio_Clinica.xlsx',     tamanho: 358400,  data: '2026-04-20', autor: 'Pedro Alves' },
-    { id: 5, nome: 'Foto_Clinica.jpg',           tamanho: 1048576, data: '2026-03-28', autor: 'Ana Lima' },
-  ],
-  3: [
-    { id: 6, nome: 'TechNova_Planejamento.pdf',  tamanho: 819200,  data: '2026-04-15', autor: 'Carlos Souza' },
-  ],
-  4: [], 5: [], 6: [],
-}
 
 // ── Painel de arquivos de uma empresa (accordion body) ──────────────────────
 function EmpresaPanel({ empresa, anexos, onUpload, uploading, uploadingId, dragOverId, setDragOverId, onDelete, fileInputRef, isUploading }) {
@@ -157,8 +143,15 @@ function EmpresaPanel({ empresa, anexos, onUpload, uploading, uploadingId, dragO
 
 // ── Componente principal ─────────────────────────────────────────────────────
 export default function Anexos() {
-  const [anexos, setAnexos]         = useState(anexosMock)
-  const [abertos, setAbertos]       = useState({ 1: true })   // só a 1ª empresa aberta por padrão
+  const { companies: empresas } = useAuth()
+  const [anexos, setAnexos]         = useState({})
+  const [abertos, setAbertos]       = useState({})
+
+  useEffect(() => {
+    if (empresas.length > 0 && Object.keys(abertos).length === 0) {
+      setAbertos({ [empresas[0].id]: true })
+    }
+  }, [empresas])
   const [uploading, setUploading]   = useState(false)
   const [uploadingId, setUploadingId] = useState(null)
   const [dragOverId, setDragOverId] = useState(null)
@@ -193,7 +186,7 @@ export default function Anexos() {
     setConfirmDel(null)
   }
 
-  const totalAnexos = Object.values(anexos).reduce((s, arr) => s + arr.length, 0)
+  const totalAnexos       = Object.values(anexos).reduce((s, arr) => s + arr.length, 0)
   const empresasComAnexos = empresas.filter(e => (anexos[e.id] || []).length > 0).length
 
   return (
@@ -316,7 +309,7 @@ export default function Anexos() {
       />
 
       {/* Modal confirmar exclusão */}
-      {confirmDel && (
+      {confirmDel && createPortal(
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl animate-scale-in">
             <div className="w-12 h-12 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -334,7 +327,8 @@ export default function Anexos() {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   )
