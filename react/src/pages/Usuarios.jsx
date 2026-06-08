@@ -1,22 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
+import ConfirmDialog from '../components/ConfirmDialog'
+import Spinner from '../components/Spinner'
+import AvatarNeutro from '../components/AvatarNeutro'
 import { useAuth } from '../context/AuthContext'
 import api from '../services/api'
 
-function AvatarNeutro({ size = 'w-9 h-9' }) {
-  return (
-    <div className={`${size} rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0`}>
-      <svg className="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
-      </svg>
-    </div>
-  )
-}
-
-function UserAvatar({ user, size = 'w-9 h-9' }) {
+function UserAvatar({ user, className = 'w-9 h-9' }) {
   const src = user?.avatarUrl || user?.avatar
-  if (src) return <img src={src} className={`${size} rounded-full object-cover border-2 border-gray-100 flex-shrink-0`} alt=""/>
-  return <AvatarNeutro size={size} />
+  if (src) return <img src={src} className={`${className} rounded-full object-cover border-2 border-gray-100 flex-shrink-0`} alt=""/>
+  return <AvatarNeutro className={className} />
 }
 
 const ROLE_LABELS = { ADMIN: 'Administrador', MANAGER: 'Gestor', USER: 'Usuário' }
@@ -128,10 +121,7 @@ function ModalEditar({ usuarioId, usuarioInicial, isAdmin, onSalvar, onFechar })
         <div className="overflow-y-auto flex-1 min-h-0 px-6 py-5">
           {loadingData ? (
             <div className="flex items-center justify-center py-12">
-              <svg className="w-6 h-6 text-primary animate-spin" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-              </svg>
+              <Spinner/>
             </div>
           ) : (
             <div className="flex flex-col gap-4">
@@ -141,7 +131,7 @@ function ModalEditar({ usuarioId, usuarioInicial, isAdmin, onSalvar, onFechar })
                 <div className="relative cursor-pointer group flex-shrink-0" onClick={() => fileRef.current?.click()}>
                   {preview
                     ? <img src={preview} className="w-16 h-16 rounded-full object-cover border-2 border-gray-200" alt=""/>
-                    : <AvatarNeutro size="w-16 h-16"/>}
+                    : <AvatarNeutro className="w-16 h-16"/>}
                   <div className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                     <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
@@ -377,15 +367,12 @@ export default function Usuarios({ onCadastrarNovo }) {
       {/* Tabela */}
       {carregando ? (
         <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center">
-          <svg className="w-6 h-6 text-primary animate-spin mx-auto mb-3" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-          </svg>
+          <Spinner className="mx-auto mb-3"/>
           <p className="text-gray-400 text-sm">Carregando usuários...</p>
         </div>
       ) : filtrados.length === 0 ? (
         <div className="bg-white rounded-2xl border border-gray-100 p-16 text-center">
-          <AvatarNeutro size="w-12 h-12"/>
+          <AvatarNeutro className="w-12 h-12"/>
           <p className="text-gray-400 text-sm mt-3 font-medium">Nenhum usuário encontrado</p>
           <p className="text-gray-300 text-xs mt-1">Tente ajustar a busca</p>
         </div>
@@ -476,47 +463,35 @@ export default function Usuarios({ onCadastrarNovo }) {
         />
       )}
 
-      {/* Modal excluir */}
-      {confirmDel && createPortal(
-        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl animate-scale-in">
-            <div className="w-12 h-12 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <svg className="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-              </svg>
+      {confirmDel && (
+        <ConfirmDialog
+          title="Excluir usuário?"
+          description={
+            <div className="flex flex-col gap-2">
+              <p className="text-sm text-gray-500">
+                "<span className="font-semibold">{confirmDel.nome || confirmDel.name}</span>" será desativado permanentemente.
+              </p>
+              {erroDelete && <p className="text-xs text-red-500 bg-red-50 rounded-lg py-2 px-3">{erroDelete}</p>}
             </div>
-            <h3 className="text-base font-bold text-gray-900 text-center mb-1">Excluir usuário?</h3>
-            <p className="text-sm text-gray-500 text-center mb-5">
-              "<span className="font-semibold">{confirmDel.nome || confirmDel.name}</span>" será desativado permanentemente.
-            </p>
-            {erroDelete && (
-              <p className="text-xs text-red-500 text-center mb-3 bg-red-50 rounded-lg py-2 px-3">{erroDelete}</p>
-            )}
-            <div className="flex gap-3">
-              <button onClick={() => { setConfirmDel(null); setErroDelete(null) }} disabled={excluindo}
-                className="btn-ghost flex-1 justify-center">Cancelar</button>
-              <button disabled={excluindo}
-                onClick={async () => {
-                  if (!confirmDel?.id) { setErroDelete('ID inválido.'); return }
-                  setExcluindo(true); setErroDelete(null)
-                  try {
-                    await api.delete(`/users/${confirmDel.id}`)
-                    setConfirmDel(null)
-                    await fetchUsers()
-                  } catch (err) {
-                    const msg = err.response?.data?.detail || err.response?.data?.message || `Erro ${err.response?.status || ''}: não foi possível excluir.`
-                    setErroDelete(msg)
-                  } finally {
-                    setExcluindo(false)
-                  }
-                }}
-                className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white bg-red-500 hover:bg-red-600 transition-colors disabled:opacity-60">
-                {excluindo ? 'Excluindo...' : 'Excluir'}
-              </button>
-            </div>
-          </div>
-        </div>,
-        document.body
+          }
+          loading={excluindo}
+          onCancel={() => { setConfirmDel(null); setErroDelete(null) }}
+          onConfirm={async () => {
+            if (!confirmDel?.id) { setErroDelete('ID inválido.'); return }
+            setExcluindo(true)
+            setErroDelete(null)
+            try {
+              await api.delete(`/users/${confirmDel.id}`)
+              setConfirmDel(null)
+              await fetchUsers()
+            } catch (err) {
+              const msg = err.response?.data?.detail || err.response?.data?.message || `Erro ${err.response?.status || ''}: não foi possível excluir.`
+              setErroDelete(msg)
+            } finally {
+              setExcluindo(false)
+            }
+          }}
+        />
       )}
     </div>
   )

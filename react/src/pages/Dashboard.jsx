@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import {
-  BarChart, Bar,
-  XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-} from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import Spinner from '../components/Spinner'
 import { useAuth } from '../context/AuthContext'
 import api from '../services/api'
 
@@ -131,7 +129,6 @@ export default function Dashboard({ empresaInicial = null, onBack = null }) {
   return (
     <div className="h-full flex flex-col overflow-hidden bg-[#F4F5F7]">
 
-      {/* ── Header ── */}
       <div className="flex-shrink-0 bg-white border-b border-gray-100 px-6 py-3 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3 min-w-0">
           <div className="p-1.5 bg-primary/10 rounded-lg text-primary flex-shrink-0">
@@ -184,25 +181,20 @@ export default function Dashboard({ empresaInicial = null, onBack = null }) {
         </div>
       </div>
 
-      {/* ── Loading ── */}
       {loading && (
         <div className="flex-1 flex items-center justify-center">
           <div className="flex flex-col items-center gap-3">
-            <svg className="w-6 h-6 text-primary animate-spin" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-            </svg>
+            <Spinner/>
             <span className="text-sm text-gray-400">Carregando dados...</span>
           </div>
         </div>
       )}
 
-      {/* ── Corpo ── */}
       {!loading && (
         <div className="flex-1 overflow-hidden p-4 flex flex-col gap-4 min-h-0">
 
           {/* KPIs */}
-          <div className="grid grid-cols-4 gap-3 flex-shrink-0">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 flex-shrink-0">
             <KPI
               label="Total de tarefas"
               valor={kpis.total}

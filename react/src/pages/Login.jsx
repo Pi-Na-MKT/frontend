@@ -22,7 +22,7 @@ export default function Login({ onGoToRegister }) {
       // Chama login() do contexto que faz a requisição e atualiza estado global
       await login(email, senha)
     } catch (err) {
-      const msg = err.response?.data?.erro || 'Credenciais inválidas.'
+      const msg = err.response?.data?.detail || err.response?.data?.message || 'Credenciais inválidas.'
       setErro(msg)
     } finally {
       setLoading(false)
@@ -82,7 +82,7 @@ export default function Login({ onGoToRegister }) {
               </div>
               <span className="text-2xl font-bold text-white tracking-tight">PiNa</span>
               <span className="text-white/30 text-xs font-medium border border-white/10 px-2 py-0.5 rounded-full">
-                Marketing Intelligence
+                Gestão de Tarefas
               </span>
             </div>
           </div>
@@ -91,7 +91,7 @@ export default function Login({ onGoToRegister }) {
             <div className="inline-flex items-center gap-2 mb-6">
               <div className="w-6 h-px" style={{ background: 'linear-gradient(90deg, #5B4FE8, transparent)' }}/>
               <span className="text-xs font-semibold tracking-widest uppercase" style={{ color: '#a78bfa' }}>
-                Plataforma de Marketing
+                Gerenciador de Tarefas
               </span>
             </div>
             <h1 className="text-5xl font-bold text-white leading-[1.1] mb-5">
@@ -101,7 +101,7 @@ export default function Login({ onGoToRegister }) {
               </span>
             </h1>
             <p className="text-white/50 text-base leading-relaxed max-w-sm">
-              Acesse sua plataforma de gestão de marketing e continue de onde parou.
+              Acesse seu gerenciador de tarefas e continue de onde parou.
             </p>
           </div>
 
