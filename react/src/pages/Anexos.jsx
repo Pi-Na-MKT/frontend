@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { createPortal } from 'react-dom'
+import ConfirmDialog from '../components/ConfirmDialog'
+import Spinner from '../components/Spinner'
 import { useAuth } from '../context/AuthContext'
+import api, { getErrorMessage } from '../services/api'
 
 const TIPOS = {
   pdf:   { label: 'PDF',    bg: 'bg-red-50',     text: 'text-red-600',     border: 'border-red-100',     icon: (
@@ -21,7 +23,7 @@ const TIPOS = {
 }
 
 function tipoArquivo(nome) {
-  const ext = nome.split('.').pop().toLowerCase()
+  const ext = (nome || '').split('.').pop().toLowerCase()
   if (ext === 'pdf') return 'pdf'
   if (['jpg','jpeg','png','gif','webp','svg'].includes(ext)) return 'image'
   if (['doc','docx'].includes(ext)) return 'doc'
@@ -38,13 +40,14 @@ function formatBytes(bytes) {
 
 function formatDate(d) {
   if (!d) return '—'
-  const [y, m, day] = d.split('-')
-  return `${day}/${m}/${y}`
+  const date = new Date(d)
+  if (isNaN(date)) return '—'
+  return date.toLocaleDateString('pt-BR')
 }
 
 
 // ── Painel de arquivos de uma empresa (accordion body) ──────────────────────
-function EmpresaPanel({ empresa, anexos, onUpload, uploading, uploadingId, dragOverId, setDragOverId, onDelete, fileInputRef, isUploading }) {
+function EmpresaPanel({ empresa, anexos, onUpload, uploading, uploadingId, dragOverId, setDragOverId, onDelete, onDownload, fileInputRef }) {
   const lista = anexos[empresa.id] || []
   const isActive = uploading && uploadingId === empresa.id
   const isDrag = dragOverId === empresa.id
@@ -63,10 +66,7 @@ function EmpresaPanel({ empresa, anexos, onUpload, uploading, uploadingId, dragO
       >
         {isActive ? (
           <>
-            <svg className="w-4 h-4 text-primary animate-spin flex-shrink-0" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-            </svg>
+            <Spinner size="sm"/>
             <span className="text-sm text-primary font-medium">Enviando arquivos...</span>
           </>
         ) : (
@@ -99,7 +99,7 @@ function EmpresaPanel({ empresa, anexos, onUpload, uploading, uploadingId, dragO
       ) : (
         <div className="flex flex-col gap-2">
           {lista.map((a, i) => {
-            const t = tipoArquivo(a.nome)
+            const t = tipoArquivo(a.fileName)
             const cfg = TIPOS[t]
             return (
               <div key={a.id}
@@ -112,15 +112,19 @@ function EmpresaPanel({ empresa, anexos, onUpload, uploading, uploadingId, dragO
 
                 {/* Info */}
                 <div className="flex-1 min-w-0">
-                  <p className={`text-sm font-semibold truncate ${cfg.text}`}>{a.nome}</p>
+                  <p className={`text-sm font-semibold truncate ${cfg.text}`}>{a.fileName}</p>
                   <p className="text-[11px] text-gray-400 mt-0.5">
-                    {formatBytes(a.tamanho)} · {formatDate(a.data)} · {a.autor}
+                    {formatBytes(a.fileSize)} · {formatDate(a.createdAt)} · {a.uploadedByName || '—'}
                   </p>
                 </div>
 
                 {/* Ações */}
                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button className={`p-1.5 rounded-lg hover:bg-white/80 transition-colors ${cfg.text}`} title="Baixar">
+                  <button
+                    onClick={() => onDownload(a.id, a.fileName)}
+                    className={`p-1.5 rounded-lg hover:bg-white/80 transition-colors ${cfg.text}`}
+                    title="Baixar"
+                  >
                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                     </svg>
@@ -152,38 +156,74 @@ export default function Anexos() {
       setAbertos({ [empresas[0].id]: true })
     }
   }, [empresas])
+
+  useEffect(() => {
+    if (empresas.length === 0) return
+    empresas.forEach(emp => loadAnexos(emp.id))
+  }, [empresas])
+
   const [uploading, setUploading]   = useState(false)
   const [uploadingId, setUploadingId] = useState(null)
   const [dragOverId, setDragOverId] = useState(null)
   const [confirmDel, setConfirmDel] = useState(null)
   const fileInputRef = useRef(null)
 
+  const loadAnexos = async (empresaId) => {
+    try {
+      const { data } = await api.get(`/attachments/company/${empresaId}`)
+      setAnexos(prev => ({ ...prev, [empresaId]: data }))
+    } catch (err) {
+      console.error('Erro ao carregar anexos:', err)
+    }
+  }
+
   const toggleEmpresa = (id) =>
     setAbertos(prev => ({ ...prev, [id]: !prev[id] }))
 
-  const handleUpload = (empresaId, files) => {
+  const handleUpload = async (empresaId, files) => {
     if (!files || files.length === 0) return
     setUploading(true)
     setUploadingId(empresaId)
-    // Garante accordion aberto ao fazer upload
     setAbertos(prev => ({ ...prev, [empresaId]: true }))
-    setTimeout(() => {
-      const novos = Array.from(files).map((f, i) => ({
-        id: Date.now() + i,
-        nome: f.name,
-        tamanho: f.size,
-        data: new Date().toISOString().slice(0, 10),
-        autor: 'Você',
-      }))
-      setAnexos(prev => ({ ...prev, [empresaId]: [...(prev[empresaId] || []), ...novos] }))
+
+    const formData = new FormData()
+    Array.from(files).forEach(f => formData.append('files', f))
+
+    try {
+      const { data } = await api.post(`/attachments/company/${empresaId}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      setAnexos(prev => ({ ...prev, [empresaId]: [...(prev[empresaId] || []), ...data] }))
+    } catch (err) {
+      alert(getErrorMessage(err, 'Erro ao enviar arquivo'))
+    } finally {
       setUploading(false)
       setUploadingId(null)
-    }, 900)
+    }
   }
 
-  const handleDelete = (empresaId, anexoId) => {
-    setAnexos(prev => ({ ...prev, [empresaId]: prev[empresaId].filter(a => a.id !== anexoId) }))
+  const handleDelete = async (empresaId, anexoId) => {
+    try {
+      await api.delete(`/attachments/${anexoId}`)
+      setAnexos(prev => ({ ...prev, [empresaId]: prev[empresaId].filter(a => a.id !== anexoId) }))
+    } catch (err) {
+      alert(getErrorMessage(err, 'Erro ao excluir anexo'))
+    }
     setConfirmDel(null)
+  }
+
+  const handleDownload = async (id, fileName) => {
+    try {
+      const { data } = await api.get(`/attachments/${id}/download`, { responseType: 'blob' })
+      const url = URL.createObjectURL(data)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = fileName
+      a.click()
+      URL.revokeObjectURL(url)
+    } catch (err) {
+      alert(getErrorMessage(err, 'Erro ao baixar arquivo'))
+    }
   }
 
   const totalAnexos       = Object.values(anexos).reduce((s, arr) => s + arr.length, 0)
@@ -286,6 +326,7 @@ export default function Anexos() {
                     dragOverId={dragOverId}
                     setDragOverId={setDragOverId}
                     onDelete={(eId, aId) => setConfirmDel({ empresaId: eId, anexoId: aId })}
+                    onDownload={handleDownload}
                     fileInputRef={fileInputRef}
                   />
                 </div>
@@ -308,27 +349,13 @@ export default function Anexos() {
         }}
       />
 
-      {/* Modal confirmar exclusão */}
-      {confirmDel && createPortal(
-        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-2xl animate-scale-in">
-            <div className="w-12 h-12 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <svg className="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-              </svg>
-            </div>
-            <h3 className="text-base font-bold text-gray-900 text-center mb-1">Excluir anexo?</h3>
-            <p className="text-sm text-gray-500 text-center mb-5">Esta ação não pode ser desfeita.</p>
-            <div className="flex gap-3">
-              <button onClick={() => setConfirmDel(null)} className="btn-ghost flex-1 justify-center">Cancelar</button>
-              <button onClick={() => handleDelete(confirmDel.empresaId, confirmDel.anexoId)}
-                className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white bg-red-500 hover:bg-red-600 transition-colors">
-                Excluir
-              </button>
-            </div>
-          </div>
-        </div>,
-        document.body
+      {confirmDel && (
+        <ConfirmDialog
+          title="Excluir anexo?"
+          description={<p className="text-sm text-gray-500">Esta ação não pode ser desfeita.</p>}
+          onConfirm={() => handleDelete(confirmDel.empresaId, confirmDel.anexoId)}
+          onCancel={() => setConfirmDel(null)}
+        />
       )}
     </div>
   )

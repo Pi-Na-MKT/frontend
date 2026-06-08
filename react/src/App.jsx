@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { AuthProvider, useAuth } from './context/AuthContext'
+import Spinner from './components/Spinner'
 import Login from './pages/Login'
 import Cadastro from './pages/Cadastro'
 import Usuarios from './pages/Usuarios'
@@ -32,10 +33,7 @@ function AppContent() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F4F5F7]">
         <div className="flex flex-col items-center gap-3">
-          <svg className="w-8 h-8 text-primary animate-spin" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-          </svg>
+          <Spinner size="lg"/>
           <span className="text-sm text-gray-500">Carregando...</span>
         </div>
       </div>
@@ -63,23 +61,24 @@ function AuthGate({ page, setPage, selectedEmpresa, setSelectedEmpresa }) {
     return <Login onGoToRegister={() => setAuthView(AUTH_VIEWS.CADASTRO)} />
   }
 
-  const goToTarefas         = (empresa) => { setSelectedEmpresa(empresa); setPage(PAGES.TAREFAS) }
-  const goToDashboard       = () => setPage(PAGES.DASHBOARD)
-  const goToEmpresas        = () => { setPage(PAGES.EMPRESAS); setSelectedEmpresa(null) }
-  const goToUsuarios        = () => setPage(PAGES.USUARIOS)
-  const goToAnexos          = () => setPage(PAGES.ANEXOS)
-  const goToTarefasBack     = () => setPage(PAGES.TAREFAS)
-  const goToCadastroUsuario = () => setPage(PAGES.CADASTRO_USUARIO)
+  const goToTarefas           = (empresa) => { setSelectedEmpresa(empresa); setPage(PAGES.TAREFAS) }
+  const goToDashboard         = () => setPage(PAGES.DASHBOARD)
+  const goToDashboardGeral    = () => { setSelectedEmpresa(null); setPage(PAGES.DASHBOARD) }
+  const goToEmpresas          = () => { setPage(PAGES.EMPRESAS); setSelectedEmpresa(null) }
+  const goToUsuarios          = () => setPage(PAGES.USUARIOS)
+  const goToAnexos            = () => setPage(PAGES.ANEXOS)
+  const goToTarefasBack       = () => setPage(PAGES.TAREFAS)
+  const goToCadastroUsuario   = () => setPage(PAGES.CADASTRO_USUARIO)
 
   const handleSidebarNav = (id) => {
     if (id === PAGES.EMPRESAS)  goToEmpresas()
     if (id === PAGES.USUARIOS)  goToUsuarios()
     if (id === PAGES.ANEXOS)    goToAnexos()
-    // Dashboard e Tarefas só via empresa — sidebar mostrará sub-itens
+    if (id === PAGES.DASHBOARD) goToDashboardGeral()
   }
 
-  const handleEmpresaNavDashboard  = (empresa) => { setSelectedEmpresa(empresa); setPage(PAGES.DASHBOARD) }
-  const handleEmpresaNavTarefas    = (empresa) => { setSelectedEmpresa(empresa); setPage(PAGES.TAREFAS) }
+  const handleEmpresaNavDashboard = (empresa) => { setSelectedEmpresa(empresa); setPage(PAGES.DASHBOARD) }
+  const handleEmpresaNavTarefas   = (empresa) => { setSelectedEmpresa(empresa); setPage(PAGES.TAREFAS) }
 
   const searchPlaceholder =
     page === PAGES.EMPRESAS  ? 'Buscar empresas...'  :
@@ -101,7 +100,12 @@ function AuthGate({ page, setPage, selectedEmpresa, setSelectedEmpresa }) {
     >
       {page === PAGES.EMPRESAS  && <Empresas onEmpresaClick={goToTarefas} />}
       {page === PAGES.TAREFAS   && <Tarefas empresa={selectedEmpresa} onBack={goToEmpresas} onDashboard={goToDashboard} />}
-      {page === PAGES.DASHBOARD && <Dashboard empresa={selectedEmpresa} onBack={goToTarefasBack} />}
+      {page === PAGES.DASHBOARD && (
+        <Dashboard
+          empresaInicial={selectedEmpresa}
+          onBack={selectedEmpresa ? goToTarefasBack : null}
+        />
+      )}
       {page === PAGES.USUARIOS  && <Usuarios onCadastrarNovo={goToCadastroUsuario} />}
       {page === PAGES.ANEXOS    && <Anexos />}
     </AppLayout>
