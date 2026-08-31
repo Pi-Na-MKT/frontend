@@ -177,16 +177,59 @@ O projeto contém arquivos de versões anteriores (login.js, cadastro.js, utils.
 - Commits granulares facilitam rollback se necessário
 
 ## Status
-- [ ] Tarefa 1: Verificar uso dos arquivos legados
-- [ ] Tarefa 2: Backup dos arquivos (opcional)
-- [ ] Tarefa 3: Remover arquivos JavaScript legados
-- [ ] Tarefa 4: Verificar e remover CSS legado
-- [ ] Tarefa 5: Limpar imports não utilizados
-- [ ] Tarefa 6: Verificar funcionamento da aplicação
-- [ ] Tarefa 7: Build de produção
-- [ ] Tarefa 8: Documentação e limpeza final
+- [x] Tarefa 1: Verificar uso dos arquivos legados
+- [x] Tarefa 2: Backup dos arquivos (opcional)
+- [x] Tarefa 3: Remover arquivos JavaScript legados
+- [x] Tarefa 4: Verificar e remover CSS legado
+- [x] Tarefa 5: Limpar imports não utilizados
+- [x] Tarefa 6: Verificar funcionamento da aplicação
+- [x] Tarefa 7: Build de produção
+- [x] Tarefa 8: Documentação e limpeza final
+
+---
+
+## Resultados da Implementação
+
+### Arquivos Removidos
+- `react/js/login.js` - Arquivo JavaScript legado não utilizado
+- `react/js/cadastro.js` - Arquivo JavaScript legado não utilizado
+- `react/css/utils.css` - Arquivo CSS legado não utilizado
+- Pastas `react/js/` e `react/css/` - Removidas após ficarem vazias
+
+### Análise de Uso Realizada
+- **login.js**: Encontrado apenas em `service/login.html` (HTML legado não utilizado pela aplicação React)
+- **cadastro.js**: Encontrado apenas em `service/cadastro.html` (HTML legado não utilizado pela aplicação React)
+- **utils.css**: Encontrado apenas em `service/login.html` e `service/cadastro.html` (HTMLs legados não utilizados pela aplicação React)
+- **Verificação em src/**: Nenhum import dos arquivos legados encontrado nos componentes React
+- **Verificação em index.html**: Nenhuma referência aos arquivos legados
+
+### Backup Realizado
+- Local: `/tmp/backup_legados_20260830_2057/`
+- Arquivos backup: login.js, cadastro.js, utils.css
+- Status: Backup preservado para segurança
+
+### Testes Realizados
+- `npm install`: Concluído com sucesso
+- `npm run dev`: Aplicação iniciou sem erros
+- Build de produção: Concluído com sucesso (bundle de 675.46 kB)
+- Console do navegador: Sem erros relacionados aos arquivos removidos
+
+### Commits Realizados
+1. `06620fb` - "Remove arquivos JS legados não utilizados"
+2. `23899a6` - "Remove CSS legado não utilizado"
+
+### Lições Aprendidas
+- Os arquivos legados eram utilizados apenas em HTMLs na pasta `service/` que não fazem parte da aplicação React atual
+- A aplicação React não tem nenhuma dependência desses arquivos
+- ESLint teve problemas de configuração (module is not defined) mas não impediu a análise manual
+- A abordagem de commits granulares facilitou o processo e permite rollback fácil se necessário
+
+### Impedimentos Encontrados
+- Nenhum impedimento significativo
+- ESLint com erro de configuração (ES module vs CommonJS) mas análise manual foi suficiente
 
 ---
 
 *Data de criação: 30/08/2026*  
-*Status: Em planejamento*
+*Data de conclusão: 30/08/2026*  
+*Status: Concluído com sucesso*
