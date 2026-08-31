@@ -103,7 +103,7 @@ export function Skeleton({ className, ...props }) {
 }
 
 // Uso em cards:
-export function TarefaCardSkeleton() {
+export function TaskCardSkeleton() {
   return (
     <div className="bg-white rounded-2xl p-4 border border-gray-100">
       <div className="flex items-start gap-2.5 mb-2">
@@ -303,7 +303,7 @@ export function MobileKanban({ columns, cardsByColumn }) {
       {/* Cards da coluna ativa */}
       <div className="mt-4 space-y-3">
         {(cardsByColumn[columns[activeColumn]?.id] || []).map(card => (
-          <TarefaCard key={card.id} tarefa={card} />
+          <TaskCard key={card.id} tarefa={card} />
         ))}
       </div>
     </div>

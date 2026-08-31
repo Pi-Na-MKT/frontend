@@ -47,7 +47,7 @@ const PRIORIDADE = {
   low:    { label: 'Baixa',  dot: 'bg-emerald-400',pill: 'bg-emerald-50 text-emerald-600 ring-1 ring-emerald-100' },
 }
 
-export default function TarefaCard({ tarefa, onEdit, onDelete, onToggleComplete, onCalendarEvent }) {
+export default function TaskCard({ tarefa, onEdit, onDelete, onToggleComplete, onCalendarEvent }) {
   const [checked,    setChecked]    = useState(tarefa.completed ?? false)
   const [menuOpen,   setMenuOpen]   = useState(false)
   const [calLoading, setCalLoading] = useState(false)

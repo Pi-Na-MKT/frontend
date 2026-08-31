@@ -77,7 +77,7 @@ const inputBase = (focused, error) => ({
   outline: 'none', transition: 'all 0.2s',
 })
 
-export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
+export default function Register({ onGoToLogin, isInternalAccess = false }) {
   const [step, setStep]             = useState(0)
   const [dir, setDir]               = useState(1)
   const [anim, setAnim]             = useState(false)

@@ -2,31 +2,31 @@ import React, { useState } from 'react'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Spinner from './components/Spinner'
 import Login from './pages/Login'
-import Cadastro from './pages/Cadastro'
-import Usuarios from './pages/Usuarios'
+import Register from './pages/Register'
+import Users from './pages/Users'
 import AppLayout from './layouts/AppLayout'
-import Empresas from './pages/Empresas'
-import Tarefas from './pages/Tarefas'
+import Companies from './pages/Companies'
+import Tasks from './pages/Tasks'
 import Dashboard from './pages/Dashboard'
-import Anexos from './pages/Anexos'
+import Attachments from './pages/Attachments'
 
 const PAGES = {
-  EMPRESAS:         'empresas',
-  TAREFAS:          'tarefas',
-  DASHBOARD:        'dashboard',
-  ANEXOS:           'anexos',
-  USUARIOS:         'usuarios',
-  CADASTRO_USUARIO: 'cadastro_usuario',
+  COMPANIES:         'companies',
+  TASKS:             'tasks',
+  DASHBOARD:         'dashboard',
+  ATTACHMENTS:       'attachments',
+  USERS:             'users',
+  REGISTER_USER:     'register_user',
 }
 
 const AUTH_VIEWS = {
   LOGIN:    'login',
-  CADASTRO: 'cadastro',
+  REGISTER: 'register',
 }
 
 function AppContent() {
   const { loading } = useAuth()
-  const [page, setPage] = useState(PAGES.EMPRESAS)
+  const [page, setPage] = useState(PAGES.COMPANIES)
   const [selectedEmpresa, setSelectedEmpresa] = useState(null)
 
   if (loading) {
@@ -55,38 +55,38 @@ function AuthGate({ page, setPage, selectedEmpresa, setSelectedEmpresa }) {
   const [authView, setAuthView] = useState(AUTH_VIEWS.LOGIN)
 
   if (!user) {
-    if (authView === AUTH_VIEWS.CADASTRO) {
-      return <Cadastro onGoToLogin={() => setAuthView(AUTH_VIEWS.LOGIN)} />
+    if (authView === AUTH_VIEWS.REGISTER) {
+      return <Register onGoToLogin={() => setAuthView(AUTH_VIEWS.LOGIN)} />
     }
-    return <Login onGoToRegister={() => setAuthView(AUTH_VIEWS.CADASTRO)} />
+    return <Login onGoToRegister={() => setAuthView(AUTH_VIEWS.REGISTER)} />
   }
 
-  const goToTarefas           = (empresa) => { setSelectedEmpresa(empresa); setPage(PAGES.TAREFAS) }
+  const goToTasks           = (empresa) => { setSelectedEmpresa(empresa); setPage(PAGES.TASKS) }
   const goToDashboard         = () => setPage(PAGES.DASHBOARD)
   const goToDashboardGeral    = () => { setSelectedEmpresa(null); setPage(PAGES.DASHBOARD) }
-  const goToEmpresas          = () => { setPage(PAGES.EMPRESAS); setSelectedEmpresa(null) }
-  const goToUsuarios          = () => setPage(PAGES.USUARIOS)
-  const goToAnexos            = () => setPage(PAGES.ANEXOS)
-  const goToTarefasBack       = () => setPage(PAGES.TAREFAS)
-  const goToCadastroUsuario   = () => setPage(PAGES.CADASTRO_USUARIO)
+  const goToCompanies          = () => { setPage(PAGES.COMPANIES); setSelectedEmpresa(null) }
+  const goToUsers              = () => setPage(PAGES.USERS)
+  const goToAttachments        = () => setPage(PAGES.ATTACHMENTS)
+  const goToTasksBack         = () => setPage(PAGES.TASKS)
+  const goToRegisterUser       = () => setPage(PAGES.REGISTER_USER)
 
   const handleSidebarNav = (id) => {
-    if (id === PAGES.EMPRESAS)  goToEmpresas()
-    if (id === PAGES.USUARIOS)  goToUsuarios()
-    if (id === PAGES.ANEXOS)    goToAnexos()
-    if (id === PAGES.DASHBOARD) goToDashboardGeral()
+    if (id === PAGES.COMPANIES)  goToCompanies()
+    if (id === PAGES.USERS)      goToUsers()
+    if (id === PAGES.ATTACHMENTS) goToAttachments()
+    if (id === PAGES.DASHBOARD)   goToDashboardGeral()
   }
 
-  const handleEmpresaNavDashboard = (empresa) => { setSelectedEmpresa(empresa); setPage(PAGES.DASHBOARD) }
-  const handleEmpresaNavTarefas   = (empresa) => { setSelectedEmpresa(empresa); setPage(PAGES.TAREFAS) }
+  const handleCompanyNavDashboard = (company) => { setSelectedEmpresa(company); setPage(PAGES.DASHBOARD) }
+  const handleCompanyNavTasks     = (company) => { setSelectedEmpresa(company); setPage(PAGES.TASKS) }
 
   const searchPlaceholder =
-    page === PAGES.EMPRESAS  ? 'Buscar empresas...'  :
-    page === PAGES.TAREFAS   ? 'Buscar tarefas...'   :
-    page === PAGES.USUARIOS  ? 'Buscar usuários...'  : 'Buscar...'
+    page === PAGES.COMPANIES   ? 'Buscar empresas...'     :
+    page === PAGES.TASKS       ? 'Buscar tarefas...'      :
+    page === PAGES.USERS       ? 'Buscar usuários...'      : 'Buscar...'
 
-  if (page === PAGES.CADASTRO_USUARIO) {
-    return <Cadastro onGoToLogin={goToUsuarios} isInternalAccess />
+  if (page === PAGES.REGISTER_USER) {
+    return <Register onGoToLogin={goToUsers} isInternalAccess />
   }
 
   return (
@@ -94,20 +94,20 @@ function AuthGate({ page, setPage, selectedEmpresa, setSelectedEmpresa }) {
       activePage={page}
       selectedEmpresa={selectedEmpresa}
       onNavigate={handleSidebarNav}
-      onEmpresaTarefas={handleEmpresaNavTarefas}
-      onEmpresaDashboard={handleEmpresaNavDashboard}
+      onCompanyTasks={handleCompanyNavTasks}
+      onCompanyDashboard={handleCompanyNavDashboard}
       searchPlaceholder={searchPlaceholder}
     >
-      {page === PAGES.EMPRESAS  && <Empresas onEmpresaClick={goToTarefas} />}
-      {page === PAGES.TAREFAS   && <Tarefas empresa={selectedEmpresa} onBack={goToEmpresas} onDashboard={goToDashboard} />}
+      {page === PAGES.COMPANIES   && <Companies onCompanyClick={goToTasks} />}
+      {page === PAGES.TASKS       && <Tasks empresa={selectedEmpresa} onBack={goToCompanies} onDashboard={goToDashboard} />}
       {page === PAGES.DASHBOARD && (
         <Dashboard
           empresaInicial={selectedEmpresa}
-          onBack={selectedEmpresa ? goToTarefasBack : null}
+          onBack={selectedEmpresa ? goToTasksBack : null}
         />
       )}
-      {page === PAGES.USUARIOS  && <Usuarios onCadastrarNovo={goToCadastroUsuario} />}
-      {page === PAGES.ANEXOS    && <Anexos />}
+      {page === PAGES.USERS       && <Users onRegisterNew={goToRegisterUser} />}
+      {page === PAGES.ATTACHMENTS && <Attachments />}
     </AppLayout>
   )
 }

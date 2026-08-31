@@ -9,7 +9,7 @@
 - ✅ Serviços centralizados para chamadas de API
 
 ### Pontos de Melhoria
-- ❌ Arquivos legados em `js/` que não estão sendo usados (`login.js`, `cadastro.js`)
+- ❌ Arquivos legados em `legacy-js/` que não estão sendo usados (`login.js`, `cadastro.js`)
 - ❌ Falta de padronização na nomenclatura de arquivos (mistura de `.jsx` e `.js`)
 - ❌ Estrutura de componentes poderia ser mais granular
 - ❌ Falta de separação entre hooks customizados, utilitários e constantes
@@ -24,7 +24,7 @@ src/
 ├── components/           # Componentes reutilizáveis
 │   ├── ui/              # Componentes genéricos (Button, Input, Modal, etc.)
 │   ├── layout/          # Componentes de layout (Navbar, Sidebar, etc.)
-│   └── business/        # Componentes específicos do domínio (TarefaCard, EmpresaCard)
+│   └── business/        # Componentes específicos do domínio (TaskCard, EmpresaCard)
 ├── pages/               # Páginas/rotas da aplicação
 ├── hooks/               # Hooks customizados
 ├── context/             # Contextos do React
@@ -54,7 +54,7 @@ src/
 ### Exemplos de Renomeação
 
 ```
-src/components/TarefaCard.jsx      ✅ (já correto)
+src/components/TaskCard.jsx      ✅ (já correto)
 src/components/EmpresaCard.jsx     ✅ (já correto)
 src/components/Modal.jsx           ✅ (já correto)
 src/context/AuthContext.jsx        ✅ (já correto)
@@ -70,9 +70,9 @@ src/pages/Dashboard.jsx           ✅ (já correto)
 ### 1. Remover Arquivos Legados (Prioridade Alta)
 
 **Arquivos para remover:**
-- `js/login.js` - Não utilizado no projeto React atual
-- `js/cadastro.js` - Não utilizado no projeto React atual
-- `css/utils.css` - Verificar se está sendo usado, caso contrário remover
+- `legacy-js/login.js` - Não utilizado no projeto React atual
+- `legacy-js/cadastro.js` - Não utilizado no projeto React atual
+- `legacy-css/utils.css` - Verificar se está sendo usado, caso contrário remover
 
 **Justificativa:** Estes arquivos parecem ser de uma versão anterior do projeto em JavaScript puro e não estão integrados com a aplicação React atual.
 
@@ -157,7 +157,7 @@ src/
 
 ## Exemplo de Implementação
 
-### Reorganização do TarefaCard
+### Reorganização do TaskCard
 
 **Antes (Tarefas.jsx):**
 ```javascript

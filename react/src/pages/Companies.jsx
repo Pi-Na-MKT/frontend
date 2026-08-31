@@ -95,7 +95,7 @@ function NewCompanyModal({ onClose, onCreated }) {
   )
 }
 
-export default function Empresas({ onEmpresaClick }) {
+export default function Companies({ onCompanyClick }) {
   const { user, companies, fetchCompanies } = useAuth()
   const [search, setSearch]       = useState('')
   const [loading, setLoading]       = useState(false)
@@ -160,7 +160,7 @@ export default function Empresas({ onEmpresaClick }) {
             <div key={empresa.id} className="animate-fade-up" style={{ animationDelay: `${i * 40}ms` }}>
               <EmpresaCard
                 empresa={empresa}
-                onClick={onEmpresaClick}
+                onClick={onCompanyClick}
                 onCalendarLinked={() => fetchCompanies()}
               />
             </div>

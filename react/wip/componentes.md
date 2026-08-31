@@ -236,11 +236,11 @@ npm install --save-dev @testing-library/react @testing-library/jest-dom jest
 **Exemplo de teste simples:**
 
 ```javascript
-// src/components/__tests__/TarefaCard.test.jsx
+// src/components/__tests__/TaskCard.test.jsx
 import { render, screen, fireEvent } from '@testing-library/react'
-import TarefaCard from '../TarefaCard'
+import TaskCard from '../TaskCard'
 
-describe('TarefaCard', () => {
+describe('TaskCard', () => {
   const mockTarefa = {
     id: 1,
     titulo: 'Test Task',
@@ -251,13 +251,13 @@ describe('TarefaCard', () => {
   }
 
   it('deve renderizar o título da tarefa', () => {
-    render(<TarefaCard tarefa={mockTarefa} />)
+    render(<TaskCard tarefa={mockTarefa} />)
     expect(screen.getByText('Test Task')).toBeInTheDocument()
   })
 
   it('deve chamar onToggleComplete quando checkbox é clicado', () => {
     const mockToggle = jest.fn()
-    render(<TarefaCard tarefa={mockTarefa} onToggleComplete={mockToggle} />)
+    render(<TaskCard tarefa={mockTarefa} onToggleComplete={mockToggle} />)
     
     const checkbox = screen.getByRole('button')
     fireEvent.click(checkbox)

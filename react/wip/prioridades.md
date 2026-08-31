@@ -11,9 +11,9 @@ Este documento organiza as melhorias propostas em ordem de prioridade, com foco 
 **Impacto:** Limpeza técnica, remove confusão
 
 **Ações:**
-- [ ] Remover `js/login.js` (não utilizado)
-- [ ] Remover `js/cadastro.js` (não utilizado)
-- [ ] Verificar e remover `css/utils.css` se não usado
+- [ ] Remover `legacy-js/login.js` (não utilizado)
+- [ ] Remover `legacy-js/cadastro.js` (não utilizado)
+- [ ] Verificar e remover `legacy-css/utils.css` se não usado
 - [ ] Limpar imports não utilizados
 
 **Justificativa:** Arquivos de versão anterior que não fazem parte da aplicação React atual.
@@ -115,7 +115,7 @@ Este documento organiza as melhorias propostas em ordem de prioridade, com foco 
 
 **Ações:**
 - [ ] Criar `src/components/ui/Skeleton.jsx`
-- [ ] Criar `TarefaCardSkeleton.jsx`
+- [ ] Criar `TaskCardSkeleton.jsx`
 - [ ] Criar `EmpresaCardSkeleton.jsx`
 - [ ] Implementar em telas com loading
 
@@ -189,7 +189,7 @@ Este documento organiza as melhorias propostas em ordem de prioridade, com foco 
 
 **Ações:**
 - [ ] Configurar Jest e React Testing Library
-- [ ] Criar testes para TarefaCard
+- [ ] Criar testes para TaskCard
 - [ ] Criar testes para EmpresaCard
 - [ ] Criar testes para hooks customizados
 - [ ] Configurar CI para rodar testes

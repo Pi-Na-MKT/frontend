@@ -27,7 +27,7 @@ PiNa/
 │   │   ├── Navbar.jsx         # Barra de navegação superior
 │   │   ├── Sidebar.jsx        # Menu lateral (Dashboard)
 │   │   ├── EmpresaCard.jsx    # Card de empresa
-│   │   └── TarefaCard.jsx     # Card de tarefa (kanban)
+│   │   └── TaskCard.jsx     # Card de tarefa (kanban)
 │   ├── data/
 │   │   └── mockData.js        # Dados mockados
 │   ├── pages/

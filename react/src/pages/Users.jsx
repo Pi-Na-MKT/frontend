@@ -295,7 +295,7 @@ function ModalEditar({ usuarioId, usuarioInicial, isAdmin, onSalvar, onFechar })
 }
 
 // ─── Página principal ──────────────────────────────────────────────────────────
-export default function Usuarios({ onCadastrarNovo }) {
+export default function Users({ onRegisterNew }) {
   const { user: loggedUser, registeredUsers, fetchUsers } = useAuth()
   const [lista,      setLista]      = useState([])
   const [busca,      setBusca]      = useState('')
@@ -330,7 +330,7 @@ export default function Usuarios({ onCadastrarNovo }) {
           <p className="page-sub">{lista.length} membro{lista.length !== 1 ? 's' : ''} ativo{lista.length !== 1 ? 's' : ''}</p>
         </div>
         {isAdmin && (
-          <button onClick={onCadastrarNovo} className="btn-primary self-start sm:self-auto">
+          <button onClick={onRegisterNew} className="btn-primary self-start sm:self-auto">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4"/>
             </svg>

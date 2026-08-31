@@ -12,20 +12,20 @@ const topNavItems = [
 ]
 
 const bottomNavItems = [
-  { id: 'anexos', label: 'Anexos', icon: (
+  { id: 'attachments', label: 'Attachments', icon: (
     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
     </svg>
   )},
-  { id: 'usuarios', label: 'Usuários', icon: (
+  { id: 'users', label: 'Users', icon: (
     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
     </svg>
   )},
 ]
 
-function EmpresaSubItem({ empresa, activePage, selectedEmpresa, onTarefas, onDashboard }) {
-  const isActive = selectedEmpresa?.id === empresa.id
+function CompanySubItem({ company, activePage, selectedCompany, onTasks, onDashboard }) {
+  const isActive = selectedCompany?.id === company.id
   const [open, setOpen] = useState(isActive)
 
   return (
@@ -34,10 +34,10 @@ function EmpresaSubItem({ empresa, activePage, selectedEmpresa, onTarefas, onDas
         className={`flex items-center gap-2 w-full px-2.5 py-2 rounded-xl text-xs font-medium transition-all ${
           isActive ? 'bg-primary/10 text-primary' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800'
         }`}>
-        <span className={`w-5 h-5 rounded-md flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0 ${empresa.cor}`}>
-          {empresa.inicial}
+        <span className={`w-5 h-5 rounded-md flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0 ${company.cor}`}>
+          {company.inicial}
         </span>
-        <span className="flex-1 truncate text-left">{empresa.nome}</span>
+        <span className="flex-1 truncate text-left">{company.nome}</span>
         <svg className={`w-3 h-3 flex-shrink-0 transition-transform ${open ? 'rotate-90' : ''}`}
           fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/>
@@ -47,9 +47,9 @@ function EmpresaSubItem({ empresa, activePage, selectedEmpresa, onTarefas, onDas
       {open && (
         <div className="ml-5 mt-0.5 flex flex-col gap-0.5 border-l-2 border-gray-100 pl-2">
           {[
-            { label: 'Tarefas', onClick: onTarefas, page: 'tarefas', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2' },
+            { label: 'Tasks', onClick: onTasks, page: 'tasks', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2' },
           ].map(item => (
-            <button key={item.label} onClick={() => item.onClick(empresa)}
+            <button key={item.label} onClick={() => item.onClick(company)}
               className={`flex items-center gap-2 px-2 py-1.5 rounded-lg text-[11px] font-medium transition-all ${
                 activePage === item.page && isActive ? 'bg-primary text-white' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800'
               }`}>
@@ -65,11 +65,11 @@ function EmpresaSubItem({ empresa, activePage, selectedEmpresa, onTarefas, onDas
   )
 }
 
-export default function AppLayout({ children, activePage, selectedEmpresa, onNavigate, onEmpresaTarefas, onEmpresaDashboard, searchPlaceholder = 'Buscar...' }) {
+export default function AppLayout({ children, activePage, selectedEmpresa, onNavigate, onCompanyTasks, onCompanyDashboard, searchPlaceholder = 'Buscar...' }) {
   const { user, logout, companies } = useAuth()
   const [sidebarOpen, setSidebarOpen]   = useState(false)
   const [showUserMenu, setShowUserMenu] = useState(false)
-  const [empresasOpen, setEmpresasOpen] = useState(true)
+  const [companiesOpen, setCompaniesOpen] = useState(true)
   const userMenuRef = useRef(null)
 
   useEffect(() => {
@@ -82,7 +82,7 @@ export default function AppLayout({ children, activePage, selectedEmpresa, onNav
   }, [showUserMenu])
   const isDashboard = activePage === 'dashboard'
   const isAdmin = user?.role?.toUpperCase() === 'ADMIN'
-  const visibleBottomItems = bottomNavItems.filter(item => item.id !== 'usuarios' || isAdmin)
+  const visibleBottomItems = bottomNavItems.filter(item => item.id !== 'users' || isAdmin)
 
   return (
     <div className="h-screen bg-[#F4F5F7] flex overflow-hidden">
@@ -120,32 +120,32 @@ export default function AppLayout({ children, activePage, selectedEmpresa, onNav
 
           <div className="mb-1">
             <button
-              onClick={() => { onNavigate?.('empresas'); setEmpresasOpen(true); setSidebarOpen(false) }}
+              onClick={() => { onNavigate?.('companies'); setCompaniesOpen(true); setSidebarOpen(false) }}
               className={`flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-sm font-semibold transition-all w-full text-left ${
-                activePage === 'empresas' ? 'bg-primary/10 text-primary' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                activePage === 'companies' ? 'bg-primary/10 text-primary' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
               }`}
             >
               <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
               </svg>
-              <span className="flex-1">Empresas</span>
-              <svg onClick={e => { e.stopPropagation(); setEmpresasOpen(v => !v) }}
-                className={`w-3.5 h-3.5 flex-shrink-0 transition-transform cursor-pointer text-gray-400 ${empresasOpen ? 'rotate-90' : ''}`}
+              <span className="flex-1">Companies</span>
+              <svg onClick={e => { e.stopPropagation(); setCompaniesOpen(v => !v) }}
+                className={`w-3.5 h-3.5 flex-shrink-0 transition-transform cursor-pointer text-gray-400 ${companiesOpen ? 'rotate-90' : ''}`}
                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/>
               </svg>
             </button>
 
-            {empresasOpen && (
+            {companiesOpen && (
               <div className="mt-1 ml-1 flex flex-col gap-0.5">
-                {companies.map(emp => (
-                  <EmpresaSubItem key={emp.id} empresa={emp} activePage={activePage} selectedEmpresa={selectedEmpresa}
-                    onTarefas={e => { onEmpresaTarefas(e); setSidebarOpen(false) }}
-                    onDashboard={e => { onEmpresaDashboard(e); setSidebarOpen(false) }}
+                {companies.map(company => (
+                  <CompanySubItem key={company.id} company={company} activePage={activePage} selectedCompany={selectedEmpresa}
+                    onTasks={e => { onCompanyTasks(e); setSidebarOpen(false) }}
+                    onDashboard={e => { onCompanyDashboard(e); setSidebarOpen(false) }}
                   />
                 ))}
                 {companies.length === 0 && (
-                  <p className="text-[11px] text-gray-400 px-2 py-1">Nenhuma empresa</p>
+                  <p className="text-[11px] text-gray-400 px-2 py-1">No companies</p>
                 )}
               </div>
             )}
