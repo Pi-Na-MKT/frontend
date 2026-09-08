@@ -1,10 +1,17 @@
-import React from 'react'
-
-export default function AvatarNeutro({ className = 'w-8 h-8' }) {
+export default function AvatarNeutro({ size = 40 }) {
   return (
-    <div className={`${className} rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0`}>
-      <svg className="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+    <div
+      className="bg-gray-200 rounded-full flex items-center justify-center"
+      style={{ width: size, height: size }}
+    >
+      <svg
+        className="text-gray-400"
+        width={size * 0.6}
+        height={size * 0.6}
+        viewBox="0 0 24 24"
+        fill="currentColor"
+      >
+        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
       </svg>
     </div>
   )

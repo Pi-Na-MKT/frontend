@@ -11,16 +11,16 @@ import Dashboard from './pages/Dashboard'
 import Attachments from './pages/Attachments'
 
 const PAGES = {
-  COMPANIES:         'companies',
-  TASKS:             'tasks',
-  DASHBOARD:         'dashboard',
-  ATTACHMENTS:       'attachments',
-  USERS:             'users',
-  REGISTER_USER:     'register_user',
+  COMPANIES: 'companies',
+  TASKS: 'tasks',
+  DASHBOARD: 'dashboard',
+  ATTACHMENTS: 'attachments',
+  USERS: 'users',
+  REGISTER_USER: 'register_user',
 }
 
 const AUTH_VIEWS = {
-  LOGIN:    'login',
+  LOGIN: 'login',
   REGISTER: 'register',
 }
 
@@ -33,7 +33,7 @@ function AppContent() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F4F5F7]">
         <div className="flex flex-col items-center gap-3">
-          <Spinner size="lg"/>
+          <Spinner size="lg" />
           <span className="text-sm text-gray-500">Carregando...</span>
         </div>
       </div>
@@ -61,29 +61,48 @@ function AuthGate({ page, setPage, selectedEmpresa, setSelectedEmpresa }) {
     return <Login onGoToRegister={() => setAuthView(AUTH_VIEWS.REGISTER)} />
   }
 
-  const goToTasks           = (empresa) => { setSelectedEmpresa(empresa); setPage(PAGES.TASKS) }
-  const goToDashboard         = () => setPage(PAGES.DASHBOARD)
-  const goToDashboardGeral    = () => { setSelectedEmpresa(null); setPage(PAGES.DASHBOARD) }
-  const goToCompanies          = () => { setPage(PAGES.COMPANIES); setSelectedEmpresa(null) }
-  const goToUsers              = () => setPage(PAGES.USERS)
-  const goToAttachments        = () => setPage(PAGES.ATTACHMENTS)
-  const goToTasksBack         = () => setPage(PAGES.TASKS)
-  const goToRegisterUser       = () => setPage(PAGES.REGISTER_USER)
+  const goToTasks = (empresa) => {
+    setSelectedEmpresa(empresa)
+    setPage(PAGES.TASKS)
+  }
+  const goToDashboard = () => setPage(PAGES.DASHBOARD)
+  const goToDashboardGeral = () => {
+    setSelectedEmpresa(null)
+    setPage(PAGES.DASHBOARD)
+  }
+  const goToCompanies = () => {
+    setPage(PAGES.COMPANIES)
+    setSelectedEmpresa(null)
+  }
+  const goToUsers = () => setPage(PAGES.USERS)
+  const goToAttachments = () => setPage(PAGES.ATTACHMENTS)
+  const goToTasksBack = () => setPage(PAGES.TASKS)
+  const goToRegisterUser = () => setPage(PAGES.REGISTER_USER)
 
   const handleSidebarNav = (id) => {
-    if (id === PAGES.COMPANIES)  goToCompanies()
-    if (id === PAGES.USERS)      goToUsers()
+    if (id === PAGES.COMPANIES) goToCompanies()
+    if (id === PAGES.USERS) goToUsers()
     if (id === PAGES.ATTACHMENTS) goToAttachments()
-    if (id === PAGES.DASHBOARD)   goToDashboardGeral()
+    if (id === PAGES.DASHBOARD) goToDashboardGeral()
   }
 
-  const handleCompanyNavDashboard = (company) => { setSelectedEmpresa(company); setPage(PAGES.DASHBOARD) }
-  const handleCompanyNavTasks     = (company) => { setSelectedEmpresa(company); setPage(PAGES.TASKS) }
+  const handleCompanyNavDashboard = (company) => {
+    setSelectedEmpresa(company)
+    setPage(PAGES.DASHBOARD)
+  }
+  const handleCompanyNavTasks = (company) => {
+    setSelectedEmpresa(company)
+    setPage(PAGES.TASKS)
+  }
 
   const searchPlaceholder =
-    page === PAGES.COMPANIES   ? 'Buscar empresas...'     :
-    page === PAGES.TASKS       ? 'Buscar tarefas...'      :
-    page === PAGES.USERS       ? 'Buscar usuários...'      : 'Buscar...'
+    page === PAGES.COMPANIES
+      ? 'Buscar empresas...'
+      : page === PAGES.TASKS
+        ? 'Buscar tarefas...'
+        : page === PAGES.USERS
+          ? 'Buscar usuários...'
+          : 'Buscar...'
 
   if (page === PAGES.REGISTER_USER) {
     return <Register onGoToLogin={goToUsers} isInternalAccess />
@@ -98,15 +117,21 @@ function AuthGate({ page, setPage, selectedEmpresa, setSelectedEmpresa }) {
       onCompanyDashboard={handleCompanyNavDashboard}
       searchPlaceholder={searchPlaceholder}
     >
-      {page === PAGES.COMPANIES   && <Companies onCompanyClick={goToTasks} />}
-      {page === PAGES.TASKS       && <Tasks empresa={selectedEmpresa} onBack={goToCompanies} onDashboard={goToDashboard} />}
+      {page === PAGES.COMPANIES && <Companies onCompanyClick={goToTasks} />}
+      {page === PAGES.TASKS && (
+        <Tasks
+          empresa={selectedEmpresa}
+          onBack={goToCompanies}
+          onDashboard={goToDashboard}
+        />
+      )}
       {page === PAGES.DASHBOARD && (
         <Dashboard
           empresaInicial={selectedEmpresa}
           onBack={selectedEmpresa ? goToTasksBack : null}
         />
       )}
-      {page === PAGES.USERS       && <Users onRegisterNew={goToRegisterUser} />}
+      {page === PAGES.USERS && <Users onRegisterNew={goToRegisterUser} />}
       {page === PAGES.ATTACHMENTS && <Attachments />}
     </AppLayout>
   )

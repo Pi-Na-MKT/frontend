@@ -1,154 +1,82 @@
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import api from '../services/api'
 
-export function useDragDrop({ onCardsChange, onColumnsChange, onLoadBoard }) {
-  // refs pra guardar o estado do drag atual
-  const dragCardRef = useRef(null) // { cardId, fromColId }
-  const dragColRef  = useRef(null) // colId
-  
-  // estados de UI pra drag & drop
-  const [draggingCardId, setDraggingCardId] = useState(null)
-  const [draggingColId,  setDraggingColId]  = useState(null)
-  const [dragOverColId,  setDragOverColId]  = useState(null)
-  const [dragOverCardId, setDragOverCardId] = useState(null)
-  const [dragColOverId,  setDragColOverId]  = useState(null)
+export function useDragDrop(columns, cardsByColumn, onDragEnd) {
+  const [draggedCard, setDraggedCard] = useState(null)
+  const [draggedColumn, setDraggedColumn] = useState(null)
 
-  // ── Card drag handlers ────────────────────────────────────────────────────
-
-  const handleCardDragStart = (cardId, fromColId) => {
-    dragCardRef.current = { cardId, fromColId }
-    dragColRef.current  = null
-    setDraggingCardId(cardId)
+  const handleCardDragStart = (card, columnId) => {
+    setDraggedCard(card)
   }
 
-  const handleCardDragEnd = () => {
-    dragCardRef.current = null
-    setDraggingCardId(null)
-    setDragOverColId(null)
-    setDragOverCardId(null)
+  const handleCardDragOver = (e, columnId) => {
+    e.preventDefault()
   }
 
-  const handleCardDrop = (toColId) => {
-    const drag = dragCardRef.current
-    if (!drag) return
-    
-    const insertBeforeId = dragOverColId === toColId ? dragOverCardId : null
-    dragCardRef.current = null
-    setDraggingCardId(null)
-    setDragOverColId(null)
-    setDragOverCardId(null)
-    
-    const { cardId, fromColId } = drag
-    
-    // usa o callback recebido pra atualizar os cards
-    onCardsChange(prev => {
-      const card = (prev[fromColId] || []).find(c => c.id === cardId)
-      if (!card) return prev
-      
-      const fromList   = (prev[fromColId] || []).filter(c => c.id !== cardId)
-      const baseToList = toColId === fromColId ? fromList : [...(prev[toColId] || [])]
-      let insertIdx    = insertBeforeId ? baseToList.findIndex(c => c.id === insertBeforeId) : -1
-      if (insertIdx === -1) insertIdx = baseToList.length
-      
-      const newToList  = [...baseToList]
-      newToList.splice(insertIdx, 0, card)
-      
-      // atualiza no servidor
-      moveCardOnServer(cardId, toColId, insertIdx)
-      
-      if (toColId === fromColId) {
-        return { ...prev, [toColId]: newToList.map((c, i) => ({ ...c, position: i })) }
-      }
-      return {
-        ...prev,
-        [fromColId]: fromList.map((c, i) => ({ ...c, position: i })),
-        [toColId]:   newToList.map((c, i) => ({ ...c, position: i })),
-      }
-    })
-  }
+  const handleCardDrop = async (e, toColumnId) => {
+    e.preventDefault()
+    if (!draggedCard) return
 
-  const moveCardOnServer = async (cardId, toColId, position) => {
+    const fromColumnId = Object.keys(cardsByColumn).find((colId) =>
+      cardsByColumn[colId].some((card) => card.id === draggedCard.id)
+    )
+
+    if (fromColumnId === toColumnId) return
+
     try {
-      await api.put(`/cards/${cardId}`, { columnId: toColId, position })
-    } catch (err) {
-      console.error('Erro ao mover card:', err)
-      // recarrega o board se der erro
-      onLoadBoard?.()
+      await api.put(`/cards/${draggedCard.id}`, {
+        columnId: toColumnId,
+        position: cardsByColumn[toColumnId]?.length || 0,
+      })
+      onDragEnd()
+    } catch (error) {
+      console.error('Erro ao mover card:', error)
     }
+
+    setDraggedCard(null)
   }
 
-  // ── Column drag handlers ──────────────────────────────────────────────────
-
-  const handleColDragStart = (colId) => {
-    dragColRef.current  = colId
-    dragCardRef.current = null
-    setDraggingColId(colId)
+  const handleColumnDragStart = (column) => {
+    setDraggedColumn(column)
   }
 
-  const handleColDragEnd = () => {
-    dragColRef.current = null
-    setDraggingColId(null)
-    setDragColOverId(null)
+  const handleColumnDragOver = (e) => {
+    e.preventDefault()
   }
 
-  const handleColDrop = (toColId) => {
-    const fromColId = dragColRef.current
-    dragColRef.current = null
-    setDraggingColId(null)
-    setDragColOverId(null)
-    
-    if (!fromColId || fromColId === toColId) return
-    
-    // usa o callback recebido pra atualizar as colunas
-    onColumnsChange(prev => {
-      const fromIdx = prev.findIndex(c => c.id === fromColId)
-      const toIdx   = prev.findIndex(c => c.id === toColId)
-      if (fromIdx === -1 || toIdx === -1) return prev
-      
-      const next    = [...prev]
-      const [moved] = next.splice(fromIdx, 1)
-      next.splice(toIdx, 0, moved)
-      
-      // atualiza no servidor
-      reorderColumnsOnServer(next)
-      
-      return next
-    })
-  }
+  const handleColumnDrop = async (e, targetColumnId) => {
+    e.preventDefault()
+    if (!draggedColumn) return
 
-  const reorderColumnsOnServer = async (newOrder) => {
+    const newOrder = [...columns]
+    const draggedIndex = newOrder.findIndex((col) => col.id === draggedColumn.id)
+    const targetIndex = newOrder.findIndex((col) => col.id === targetColumnId)
+
+    if (draggedIndex === targetIndex) return
+
+    newOrder.splice(draggedIndex, 1)
+    newOrder.splice(targetIndex, 0, draggedColumn)
+
     try {
-      await Promise.all(newOrder.map((col, i) => api.put(`/columns/${col.id}`, { position: i })))
-    } catch (err) {
-      console.error('Erro ao reordenar colunas:', err)
-      // recarrega o board se der erro
-      onLoadBoard?.()
+      await Promise.all(
+        newOrder.map((col, i) => api.put(`/columns/${col.id}`, { position: i }))
+      )
+      onDragEnd()
+    } catch (error) {
+      console.error('Erro ao reordenar colunas:', error)
     }
+
+    setDraggedColumn(null)
   }
 
   return {
-    // estado
-    draggingCardId,
-    draggingColId,
-    dragOverColId,
-    dragOverCardId,
-    dragColOverId,
-    
-    // refs (preciso pra checar no dragOver)
-    dragCardRef,
-    dragColRef,
-    
-    // setters
-    setDragOverColId,
-    setDragOverCardId,
-    setDragColOverId,
-    
-    // handlers
+    draggedCard,
+    draggedColumn,
     handleCardDragStart,
-    handleCardDragEnd,
+    handleCardDragOver,
     handleCardDrop,
-    handleColDragStart,
-    handleColDragEnd,
-    handleColDrop,
+    handleColumnDragStart,
+    handleColumnDragOver,
+    handleColumnDrop,
   }
 }
