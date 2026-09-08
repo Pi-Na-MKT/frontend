@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { useAuth } from '../context/AuthContext'
 
 const MAX_VISIBLE = 3
 
@@ -51,6 +52,8 @@ export default function TarefaCard({ tarefa, onEdit, onDelete, onToggleComplete,
   const [checked,    setChecked]    = useState(tarefa.completed ?? false)
   const [menuOpen,   setMenuOpen]   = useState(false)
   const [calLoading, setCalLoading] = useState(false)
+  const { user } = useAuth()
+  const isAdmin = user?.role?.toUpperCase() === 'ADMIN'
 
   useEffect(() => {
     setChecked(tarefa.completed ?? false)
@@ -116,7 +119,7 @@ export default function TarefaCard({ tarefa, onEdit, onDelete, onToggleComplete,
                 Editar
               </button>
 
-              {tarefa.dueDate && (
+              {tarefa.dueDate && isAdmin && (
                 <button
                   disabled={!!tarefa.googleCalendarEventId || calLoading}
                   onClick={async e => {

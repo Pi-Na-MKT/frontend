@@ -46,7 +46,6 @@ function formatDate(d) {
 }
 
 
-// ── Painel de arquivos de uma empresa (accordion body) ──────────────────────
 function EmpresaPanel({ empresa, anexos, onUpload, uploading, uploadingId, dragOverId, setDragOverId, onDelete, onDownload, fileInputRef }) {
   const lista = anexos[empresa.id] || []
   const isActive = uploading && uploadingId === empresa.id
@@ -54,7 +53,6 @@ function EmpresaPanel({ empresa, anexos, onUpload, uploading, uploadingId, dragO
 
   return (
     <div className="px-5 pb-5 pt-2">
-      {/* Drop zone compacta */}
       <div
         onDragOver={e => { e.preventDefault(); setDragOverId(empresa.id) }}
         onDragLeave={() => setDragOverId(null)}
@@ -86,7 +84,6 @@ function EmpresaPanel({ empresa, anexos, onUpload, uploading, uploadingId, dragO
         )}
       </div>
 
-      {/* Lista de arquivos */}
       {lista.length === 0 ? (
         <div className="text-center py-8">
           <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center mx-auto mb-2">
@@ -105,12 +102,10 @@ function EmpresaPanel({ empresa, anexos, onUpload, uploading, uploadingId, dragO
               <div key={a.id}
                 className={`flex items-center gap-3 p-3 rounded-xl border transition-all group hover:shadow-sm animate-fade-up ${cfg.bg} ${cfg.border}`}
                 style={{ animationDelay: `${i * 30}ms` }}>
-                {/* Ícone tipo */}
                 <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-white border ${cfg.border} ${cfg.text}`}>
                   {cfg.icon}
                 </div>
 
-                {/* Info */}
                 <div className="flex-1 min-w-0">
                   <p className={`text-sm font-semibold truncate ${cfg.text}`}>{a.fileName}</p>
                   <p className="text-[11px] text-gray-400 mt-0.5">
@@ -118,7 +113,6 @@ function EmpresaPanel({ empresa, anexos, onUpload, uploading, uploadingId, dragO
                   </p>
                 </div>
 
-                {/* Ações */}
                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button
                     onClick={() => onDownload(a.id, a.fileName)}
@@ -145,7 +139,6 @@ function EmpresaPanel({ empresa, anexos, onUpload, uploading, uploadingId, dragO
   )
 }
 
-// ── Componente principal ─────────────────────────────────────────────────────
 export default function Anexos() {
   const { companies: empresas } = useAuth()
   const [anexos, setAnexos]         = useState({})
@@ -232,7 +225,6 @@ export default function Anexos() {
   return (
     <div className="p-6 lg:p-8 max-w-5xl mx-auto animate-fade-up">
 
-      {/* ── Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
         <div>
           <p className="section-title mb-1">Documentos</p>
@@ -251,7 +243,6 @@ export default function Anexos() {
         </div>
       </div>
 
-      {/* ── Acordeão de empresas ── */}
       <div className="flex flex-col gap-3">
         {empresas.map((emp, idx) => {
           const count  = (anexos[emp.id] || []).length
@@ -265,17 +256,14 @@ export default function Anexos() {
               }`}
               style={{ animationDelay: `${idx * 50}ms` }}
             >
-              {/* Cabeçalho da empresa — clique para expandir */}
               <button
                 onClick={() => toggleEmpresa(emp.id)}
                 className="w-full flex items-center gap-4 px-5 py-4 text-left group hover:bg-gray-50/50 transition-colors"
               >
-                {/* Avatar empresa */}
                 <div className={`w-10 h-10 rounded-xl ${emp.cor} flex items-center justify-center text-white text-sm font-bold flex-shrink-0 shadow-sm`}>
                   {emp.inicial}
                 </div>
 
-                {/* Nome + contagem */}
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-bold text-gray-900 truncate">{emp.nome}</p>
                   <p className="text-xs text-gray-400 mt-0.5">
@@ -283,14 +271,12 @@ export default function Anexos() {
                   </p>
                 </div>
 
-                {/* Badge count */}
                 {count > 0 && (
                   <span className={`badge mr-2 ${isOpen ? 'bg-primary/10 text-primary ring-1 ring-primary/20' : 'bg-gray-100 text-gray-500 ring-1 ring-gray-200/60'}`}>
                     {count}
                   </span>
                 )}
 
-                {/* Upload rápido (sem abrir accordion) */}
                 <div
                   onClick={e => {
                     e.stopPropagation()
@@ -306,7 +292,6 @@ export default function Anexos() {
                   </svg>
                 </div>
 
-                {/* Chevron */}
                 <div className={`w-5 h-5 text-gray-400 flex-shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>
                   <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7"/>
@@ -314,7 +299,6 @@ export default function Anexos() {
                 </div>
               </button>
 
-              {/* Conteúdo expandível */}
               {isOpen && (
                 <div className="border-t border-gray-100">
                   <EmpresaPanel
@@ -336,7 +320,6 @@ export default function Anexos() {
         })}
       </div>
 
-      {/* Input file oculto compartilhado */}
       <input
         ref={fileInputRef}
         type="file"

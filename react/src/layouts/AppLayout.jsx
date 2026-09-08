@@ -82,6 +82,7 @@ export default function AppLayout({ children, activePage, selectedEmpresa, onNav
   }, [showUserMenu])
   const isDashboard = activePage === 'dashboard'
   const isAdmin = user?.role?.toUpperCase() === 'ADMIN'
+  const visibleTopItems    = topNavItems.filter(item => item.id !== 'dashboard' || isAdmin)
   const visibleBottomItems = bottomNavItems.filter(item => item.id !== 'usuarios' || isAdmin)
 
   return (
@@ -104,7 +105,7 @@ export default function AppLayout({ children, activePage, selectedEmpresa, onNav
         <nav className="flex flex-col gap-0.5 px-3 flex-1 overflow-y-auto scrollbar-thin pb-3">
           <p className="section-title px-2 mb-2 mt-1">Menu</p>
 
-          {topNavItems.map(item => (
+          {visibleTopItems.map(item => (
             <button key={item.id} onClick={() => { onNavigate?.(item.id); setSidebarOpen(false) }}
               className={`flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-sm font-medium transition-all w-full text-left ${
                 activePage === item.id && !selectedEmpresa

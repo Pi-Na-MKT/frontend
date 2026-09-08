@@ -32,13 +32,11 @@ export default function Login({ onGoToRegister }) {
     <div style={{ fontFamily: "'Inter', system-ui, sans-serif", background: '#0F172A', minHeight: '100vh' }}
       className="w-full flex items-center justify-center relative overflow-hidden">
 
-      {/* Fundo: orbs sutis */}
       <div style={{
         position: 'absolute', inset: 0, pointerEvents: 'none',
         background: 'radial-gradient(ellipse 80% 60% at 20% 10%, rgba(30,58,138,0.35) 0%, transparent 60%), radial-gradient(ellipse 60% 50% at 80% 90%, rgba(30,58,138,0.2) 0%, transparent 55%), radial-gradient(ellipse 40% 40% at 70% 20%, rgba(251,191,36,0.06) 0%, transparent 50%)'
       }} />
 
-      {/* Grade de pontos */}
       <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.06, pointerEvents: 'none' }}>
         <defs>
           <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
@@ -48,13 +46,11 @@ export default function Login({ onGoToRegister }) {
         <rect width="100%" height="100%" fill="url(#dots)" />
       </svg>
 
-      {/* Linha decorativa superior */}
       <div style={{
         position: 'absolute', top: 0, left: 0, right: 0, height: '2px',
         background: 'linear-gradient(90deg, transparent 0%, #1E3A8A 30%, #FBBF24 50%, #1E3A8A 70%, transparent 100%)'
       }} />
 
-      {/* Logo + rodapé topo */}
       <div style={{ position: 'absolute', top: '2rem', left: '50%', transform: 'translateX(-50%)', display: 'flex', alignItems: 'center', gap: '10px' }}>
         <div style={{ width: 32, height: 32, borderRadius: 8, background: '#FBBF24', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <svg width="16" height="16" fill="none" stroke="#0F172A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
@@ -64,7 +60,6 @@ export default function Login({ onGoToRegister }) {
         <span style={{ color: '#fff', fontWeight: 700, fontSize: 18, letterSpacing: '-0.02em' }}>PINA</span>
       </div>
 
-      {/* Card central */}
       <div style={{
         position: 'relative', zIndex: 10,
         width: '100%', maxWidth: 400,
@@ -81,7 +76,6 @@ export default function Login({ onGoToRegister }) {
         transition: 'opacity 0.5s ease, transform 0.5s ease',
       }}>
 
-        {/* Cabeçalho */}
         <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
           <p style={{ fontSize: 12, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#FBBF24', marginBottom: 10 }}>
             Gestão de Tarefas
@@ -94,12 +88,10 @@ export default function Login({ onGoToRegister }) {
           </p>
         </div>
 
-        {/* Divisor */}
         <div style={{ height: 1, background: 'rgba(30,58,138,0.4)', marginBottom: '1.75rem' }} />
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
 
-          {/* E-mail */}
           <div>
             <label style={{ display: 'block', fontSize: 11, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#64748B', marginBottom: 8 }}>
               E-mail
@@ -127,7 +119,6 @@ export default function Login({ onGoToRegister }) {
             />
           </div>
 
-          {/* Senha */}
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
               <label style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#64748B' }}>
@@ -171,7 +162,6 @@ export default function Login({ onGoToRegister }) {
             </div>
           </div>
 
-          {/* Erro */}
           {erro && (
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', borderRadius: 10, background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.18)', color: '#f87171', fontSize: 13 }}>
               <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" style={{ flexShrink: 0 }}>
@@ -181,7 +171,6 @@ export default function Login({ onGoToRegister }) {
             </div>
           )}
 
-          {/* Botão */}
           <button type="submit" disabled={loading} style={{
             width: '100%', padding: '13px',
             borderRadius: 10,
@@ -220,7 +209,6 @@ export default function Login({ onGoToRegister }) {
         )}
       </div>
 
-      {/* Rodapé */}
       <p style={{ position: 'absolute', bottom: '1.5rem', left: '50%', transform: 'translateX(-50%)', fontSize: 11, color: '#1E3A8A', whiteSpace: 'nowrap' }}>
         © {new Date().getFullYear()} PiNa · Todos os direitos reservados
       </p>

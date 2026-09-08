@@ -61,9 +61,11 @@ function AuthGate({ page, setPage, selectedEmpresa, setSelectedEmpresa }) {
     return <Login onGoToRegister={() => setAuthView(AUTH_VIEWS.CADASTRO)} />
   }
 
+  const isAdmin = user?.role?.toUpperCase() === 'ADMIN'
+
   const goToTarefas           = (empresa) => { setSelectedEmpresa(empresa); setPage(PAGES.TAREFAS) }
-  const goToDashboard         = () => setPage(PAGES.DASHBOARD)
-  const goToDashboardGeral    = () => { setSelectedEmpresa(null); setPage(PAGES.DASHBOARD) }
+  const goToDashboard         = () => { if (isAdmin) setPage(PAGES.DASHBOARD) }
+  const goToDashboardGeral    = () => { if (isAdmin) { setSelectedEmpresa(null); setPage(PAGES.DASHBOARD) } }
   const goToEmpresas          = () => { setPage(PAGES.EMPRESAS); setSelectedEmpresa(null) }
   const goToUsuarios          = () => setPage(PAGES.USUARIOS)
   const goToAnexos            = () => setPage(PAGES.ANEXOS)
@@ -100,7 +102,7 @@ function AuthGate({ page, setPage, selectedEmpresa, setSelectedEmpresa }) {
     >
       {page === PAGES.EMPRESAS  && <Empresas onEmpresaClick={goToTarefas} />}
       {page === PAGES.TAREFAS   && <Tarefas empresa={selectedEmpresa} onBack={goToEmpresas} onDashboard={goToDashboard} />}
-      {page === PAGES.DASHBOARD && (
+      {page === PAGES.DASHBOARD && isAdmin && (
         <Dashboard
           empresaInicial={selectedEmpresa}
           onBack={selectedEmpresa ? goToTarefasBack : null}

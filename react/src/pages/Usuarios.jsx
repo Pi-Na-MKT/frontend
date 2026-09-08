@@ -15,16 +15,15 @@ function UserAvatar({ user, className = 'w-9 h-9' }) {
 const ROLE_LABELS = { ADMIN: 'Administrador', MANAGER: 'Gestor', USER: 'Usuário' }
 const SENIORITY_LABELS = { junior: 'Júnior', pleno: 'Pleno', senior: 'Sênior' }
 
-// ─── Modal de edição com dados completos ──────────────────────────────────────
 function ModalEditar({ usuarioId, usuarioInicial, isAdmin, onSalvar, onFechar }) {
   const { companies } = useAuth()
   const fileRef = useRef(null)
 
   const [loadingData,  setLoadingData]  = useState(true)
   const [preview,      setPreview]      = useState(usuarioInicial?.avatarUrl || '')
-  const [boardsMap,    setBoardsMap]    = useState({}) // { companyId: { id, name, memberIds[] } }
+  const [boardsMap,    setBoardsMap]    = useState({})
   const [companyIds,   setCompanyIds]   = useState(new Set())
-  const [savingCo,     setSavingCo]     = useState(null) // companyId sendo salvo
+  const [savingCo,     setSavingCo]     = useState(null)
 
   const [form, setForm] = useState({
     nome: usuarioInicial?.nome || usuarioInicial?.name || '',
@@ -107,7 +106,6 @@ function ModalEditar({ usuarioId, usuarioInicial, isAdmin, onSalvar, onFechar })
     <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg animate-scale-in flex flex-col max-h-[90vh] overflow-hidden">
 
-        {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 flex-shrink-0">
           <h3 className="text-base font-bold text-gray-900">Editar usuário</h3>
           <button onClick={onFechar} className="p-1.5 rounded-lg text-gray-400 hover:bg-gray-100 transition-colors">
@@ -117,7 +115,6 @@ function ModalEditar({ usuarioId, usuarioInicial, isAdmin, onSalvar, onFechar })
           </button>
         </div>
 
-        {/* Body */}
         <div className="overflow-y-auto flex-1 min-h-0 px-6 py-5">
           {loadingData ? (
             <div className="flex items-center justify-center py-12">
@@ -126,7 +123,6 @@ function ModalEditar({ usuarioId, usuarioInicial, isAdmin, onSalvar, onFechar })
           ) : (
             <div className="flex flex-col gap-4">
 
-              {/* Avatar */}
               <div className="flex items-center gap-4">
                 <div className="relative cursor-pointer group flex-shrink-0" onClick={() => fileRef.current?.click()}>
                   {preview
@@ -151,7 +147,6 @@ function ModalEditar({ usuarioId, usuarioInicial, isAdmin, onSalvar, onFechar })
                   }}/>
               </div>
 
-              {/* Info somente-leitura */}
               <div className="grid grid-cols-2 gap-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
                 <div>
                   <p className="section-title mb-0.5">E-mail</p>
@@ -163,7 +158,6 @@ function ModalEditar({ usuarioId, usuarioInicial, isAdmin, onSalvar, onFechar })
                 </div>
               </div>
 
-              {/* Campos editáveis */}
               <div className="grid grid-cols-2 gap-3">
                 <div className="col-span-2">
                   <label className="section-title block mb-1.5">Nome completo</label>
@@ -205,7 +199,6 @@ function ModalEditar({ usuarioId, usuarioInicial, isAdmin, onSalvar, onFechar })
                 </div>
               </div>
 
-              {/* ── Acesso a empresas (só admin) ── */}
               {isAdmin && companies.length > 0 && (
                 <div>
                   <div className="h-px bg-gray-100 mb-4"/>
@@ -232,7 +225,6 @@ function ModalEditar({ usuarioId, usuarioInicial, isAdmin, onSalvar, onFechar })
                             disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-50'
                           } ${active && !disabled ? 'bg-primary/5' : ''}`}
                         >
-                          {/* Checkbox customizado */}
                           <div
                             onClick={() => !disabled && handleToggleCompany(company.id, !active)}
                             className={`w-4 h-4 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all ${
@@ -251,15 +243,11 @@ function ModalEditar({ usuarioId, usuarioInicial, isAdmin, onSalvar, onFechar })
                             ) : null}
                           </div>
 
-                          {/* Avatar da empresa */}
                           <span className={`w-6 h-6 rounded-lg flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0 ${company.cor}`}>
                             {company.inicial}
                           </span>
 
-                          {/* Nome */}
                           <span className="text-sm text-gray-800 flex-1 truncate">{company.nome}</span>
-
-                          {/* Estado */}
                           {!board ? (
                             <span className="text-[10px] text-gray-400 flex-shrink-0">sem board</span>
                           ) : active ? (
@@ -276,7 +264,6 @@ function ModalEditar({ usuarioId, usuarioInicial, isAdmin, onSalvar, onFechar })
           )}
         </div>
 
-        {/* Footer */}
         <div className="flex gap-3 px-6 py-4 border-t border-gray-100 flex-shrink-0">
           <button onClick={onFechar} className="btn-ghost flex-1 justify-center">Cancelar</button>
           <button disabled={loadingData}
@@ -294,7 +281,6 @@ function ModalEditar({ usuarioId, usuarioInicial, isAdmin, onSalvar, onFechar })
   )
 }
 
-// ─── Página principal ──────────────────────────────────────────────────────────
 export default function Usuarios({ onCadastrarNovo }) {
   const { user: loggedUser, registeredUsers, fetchUsers } = useAuth()
   const [lista,      setLista]      = useState([])
@@ -322,7 +308,6 @@ export default function Usuarios({ onCadastrarNovo }) {
   return (
     <div className="p-6 lg:p-8 max-w-6xl mx-auto animate-fade-up">
 
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
         <div>
           <p className="section-title mb-1">Gestão de pessoas</p>
@@ -339,7 +324,6 @@ export default function Usuarios({ onCadastrarNovo }) {
         )}
       </div>
 
-      {/* KPI */}
       <div className="grid grid-cols-2 gap-4 mb-7">
         {[
           { label: 'Total',  v: lista.length, cor: 'text-violet-600',  bg: 'bg-violet-50',  border: 'border-violet-100'  },
@@ -352,7 +336,6 @@ export default function Usuarios({ onCadastrarNovo }) {
         ))}
       </div>
 
-      {/* Filtro */}
       <div className="bg-white rounded-2xl border border-gray-100 p-4 mb-5 shadow-sm">
         <div className="relative">
           <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -364,7 +347,6 @@ export default function Usuarios({ onCadastrarNovo }) {
         </div>
       </div>
 
-      {/* Tabela */}
       {carregando ? (
         <div className="bg-white rounded-2xl border border-gray-100 p-12 text-center">
           <Spinner className="mx-auto mb-3"/>
@@ -428,7 +410,6 @@ export default function Usuarios({ onCadastrarNovo }) {
         </div>
       )}
 
-      {/* Modal editar */}
       {editandoId && usuarioEditando && (
         <ModalEditar
           usuarioId={editandoId}

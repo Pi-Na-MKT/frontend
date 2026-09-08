@@ -4,7 +4,6 @@ import Spinner from '../components/Spinner'
 import { useAuth } from '../context/AuthContext'
 import api from '../services/api'
 
-// ── KPI card ─────────────────────────────────────────────────────────────────
 function KPI({ label, valor, sub, cor = 'text-gray-900', icon }) {
   return (
     <div className="bg-white rounded-xl p-4 border border-gray-100 flex flex-col gap-2">
@@ -18,16 +17,13 @@ function KPI({ label, valor, sub, cor = 'text-gray-900', icon }) {
   )
 }
 
-// ── Componente principal ──────────────────────────────────────────────────────
 export default function Dashboard({ empresaInicial = null, onBack = null }) {
   const { companies } = useAuth()
 
-  const [allData,   setAllData]   = useState([]) // [{empresa, colunas: [{...col, cards:[]}]}]
+  const [allData,   setAllData]   = useState([])
   const [loading,   setLoading]   = useState(true)
   const [filtro,    setFiltro]    = useState(empresaInicial?.id ?? '')
 
-  // Quando o componente recebe uma empresa inicial (vindo de Tarefas),
-  // sincroniza o filtro caso mude.
   useEffect(() => {
     setFiltro(empresaInicial?.id ?? '')
   }, [empresaInicial?.id])
@@ -67,7 +63,6 @@ export default function Dashboard({ empresaInicial = null, onBack = null }) {
     }
   }
 
-  // Dados filtrados pela empresa selecionada (ou todos)
   const dadosFiltrados = useMemo(() =>
     filtro ? allData.filter(d => d.empresa.id === Number(filtro)) : allData
   , [allData, filtro])
@@ -76,7 +71,6 @@ export default function Dashboard({ empresaInicial = null, onBack = null }) {
     companies.find(c => c.id === Number(filtro)) ?? null
   , [companies, filtro])
 
-  // KPIs globais — baseados no campo completed e dueDate do card
   const kpis = useMemo(() => {
     const now = new Date()
     const allCards = dadosFiltrados.flatMap(d => d.colunas.flatMap(c => c.cards))
@@ -87,7 +81,6 @@ export default function Dashboard({ empresaInicial = null, onBack = null }) {
     return { total, concluidas, andamento: total - concluidas, atrasadas, taxa }
   }, [dadosFiltrados])
 
-  // Gráfico de barras: concluídas vs pendentes por empresa
   const chartData = useMemo(() => {
     return dadosFiltrados.map(d => {
       const cards     = d.colunas.flatMap(c => c.cards)
@@ -102,7 +95,6 @@ export default function Dashboard({ empresaInicial = null, onBack = null }) {
 
   const chartTitle = filtro ? 'Concluídas vs Pendentes' : 'Tarefas por empresa'
 
-  // Membros: baseado em completed e dueDate do card
   const membrosData = useMemo(() => {
     const userMap = {}
     const now = new Date()
@@ -145,7 +137,6 @@ export default function Dashboard({ empresaInicial = null, onBack = null }) {
         </div>
 
         <div className="flex items-center gap-3 flex-shrink-0">
-          {/* Filtro por empresa */}
           <div className="flex items-center gap-2">
             <svg className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z"/>
@@ -168,7 +159,6 @@ export default function Dashboard({ empresaInicial = null, onBack = null }) {
             </select>
           </div>
 
-          {/* Botão voltar (só quando veio de Tarefas) */}
           {onBack && (
             <button onClick={onBack}
               className="flex items-center gap-1.5 bg-gray-100 text-gray-600 px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-gray-200 transition-colors">
@@ -193,7 +183,6 @@ export default function Dashboard({ empresaInicial = null, onBack = null }) {
       {!loading && (
         <div className="flex-1 overflow-hidden p-4 flex flex-col gap-4 min-h-0">
 
-          {/* KPIs */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 flex-shrink-0">
             <KPI
               label="Total de tarefas"
@@ -220,7 +209,6 @@ export default function Dashboard({ empresaInicial = null, onBack = null }) {
             />
           </div>
 
-          {/* Gráfico */}
           <div className="flex-shrink-0 bg-white rounded-xl border border-gray-100 p-4" style={{ height: '210px' }}>
             <p className="text-xs font-semibold text-gray-700 mb-1">{chartTitle}</p>
             {chartData.length > 0 && chartData.some(d => d.concluidas + d.pendentes > 0) ? (
@@ -250,7 +238,6 @@ export default function Dashboard({ empresaInicial = null, onBack = null }) {
             )}
           </div>
 
-          {/* Tabela de membros */}
           <div className="flex-1 bg-white rounded-xl border border-gray-100 overflow-hidden flex flex-col min-h-0">
             <div className="px-5 py-3 border-b border-gray-100 flex-shrink-0 flex items-center justify-between">
               <p className="text-xs font-semibold text-gray-700">Desempenho individual</p>

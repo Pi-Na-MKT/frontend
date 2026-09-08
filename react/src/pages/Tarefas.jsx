@@ -244,9 +244,8 @@ export default function Tarefas({ empresa, onBack, onDashboard }) {
   const [deletingCard,       setDeletingCard]       = useState(false)
   const [deleteColumnTarget, setDeleteColumnTarget] = useState(null)
 
-  // ── Drag & drop state ─────────────────────────────────────────────────────
-  const dragCardRef      = useRef(null) // { cardId, fromColId }
-  const dragColRef       = useRef(null) // colId
+  const dragCardRef      = useRef(null)
+  const dragColRef       = useRef(null)
   const [draggingCardId, setDraggingCardId] = useState(null)
   const [draggingColId,  setDraggingColId]  = useState(null)
   const [dragOverColId,  setDragOverColId]  = useState(null)
@@ -415,8 +414,6 @@ export default function Tarefas({ empresa, onBack, onDashboard }) {
     }
   }
 
-  // ── Card drag handlers ────────────────────────────────────────────────────
-
   const handleCardDragStart = (cardId, fromColId) => {
     dragCardRef.current = { cardId, fromColId }
     dragColRef.current  = null
@@ -469,8 +466,6 @@ export default function Tarefas({ empresa, onBack, onDashboard }) {
     }
   }
 
-  // ── Column drag handlers ──────────────────────────────────────────────────
-
   const handleColDragStart = (colId) => {
     dragColRef.current  = colId
     dragCardRef.current = null
@@ -510,8 +505,6 @@ export default function Tarefas({ empresa, onBack, onDashboard }) {
     }
   }
 
-  // ─────────────────────────────────────────────────────────────────────────
-
   const totalCards   = Object.values(cardsByColumn).reduce((s, arr) => s + arr.length, 0)
   const doneColumnId = columns.find(c => c.label.toLowerCase().includes('conclu') || c.label.toLowerCase().includes('finaliz'))?.id
   const doneCount    = doneColumnId ? (cardsByColumn[doneColumnId] || []).length : 0
@@ -546,14 +539,14 @@ export default function Tarefas({ empresa, onBack, onDashboard }) {
           </div>
 
           <div className="flex items-center gap-2">
-            {totalCards > 0 && (
+            {/* {totalCards > 0 && (
               <div className="hidden sm:flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2">
                 <div className="w-20 h-1.5 bg-gray-200 rounded-full overflow-hidden">
                   <div className="h-full bg-emerald-500 rounded-full transition-all duration-500" style={{ width: `${donePercent}%` }}/>
                 </div>
                 <span className="text-xs font-semibold text-gray-600">{donePercent}%</span>
               </div>
-            )}
+            )} */}
             <button onClick={onDashboard} className="btn-primary">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>

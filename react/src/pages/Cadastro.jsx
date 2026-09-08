@@ -143,7 +143,6 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
   const eyeOff = <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/></svg>
   const eyeOn  = <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
 
-  /* ── TELA DE SUCESSO ── */
   if (sucesso) return (
     <div style={{ fontFamily: "'Inter', system-ui, sans-serif", background: '#0F172A', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
       <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 70% 60% at 50% 50%, rgba(30,58,138,0.25) 0%, transparent 65%)', pointerEvents: 'none' }} />
@@ -172,11 +171,9 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
     </div>
   )
 
-  /* ── TELA PRINCIPAL ── */
   return (
     <div style={{ fontFamily: "'Inter', system-ui, sans-serif", background: '#0F172A', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden', paddingTop: '4rem', paddingBottom: '2.5rem' }}>
 
-      {/* Fundo */}
       <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(ellipse 80% 60% at 20% 10%, rgba(30,58,138,0.32) 0%, transparent 60%), radial-gradient(ellipse 60% 50% at 80% 90%, rgba(30,58,138,0.18) 0%, transparent 55%), radial-gradient(ellipse 35% 35% at 65% 20%, rgba(251,191,36,0.05) 0%, transparent 50%)' }} />
       <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.055, pointerEvents: 'none' }}>
         <defs><pattern id="dots2" width="28" height="28" patternUnits="userSpaceOnUse"><circle cx="1.5" cy="1.5" r="1.5" fill="#FBBF24"/></pattern></defs>
@@ -184,7 +181,6 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
       </svg>
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, transparent, #1E3A8A, #FBBF24, #1E3A8A, transparent)' }} />
 
-      {/* Logo */}
       <div style={{ position: 'absolute', top: '1.75rem', left: '50%', transform: 'translateX(-50%)', display: 'flex', alignItems: 'center', gap: 10 }}>
         <div style={{ width: 30, height: 30, borderRadius: 8, background: '#FBBF24', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <svg width="14" height="14" fill="none" stroke="#0F172A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
@@ -192,7 +188,6 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
         <span style={{ color: '#fff', fontWeight: 700, fontSize: 17, letterSpacing: '-0.02em' }}>PINA</span>
       </div>
 
-      {/* Card */}
       <div style={{
         position: 'relative', zIndex: 10,
         width: '100%', maxWidth: 480,
@@ -209,22 +204,18 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
         transition: 'opacity 0.5s ease, transform 0.5s ease',
       }}>
 
-        {/* Cabeçalho */}
         <div style={{ marginBottom: '0.75rem', textAlign: 'center' }}>
           <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#FBBF24', marginBottom: 2 }}>Criar conta</p>
           <h1 style={{ fontSize: 18, fontWeight: 700, color: '#fff', letterSpacing: '-0.02em', margin: 0 }}>{STEPS[step]}</h1>
           <p style={{ marginTop: 4, fontSize: 12, color: '#475569' }}>Etapa {step + 1} de {STEPS.length}</p>
         </div>
 
-        {/* Progress bar */}
         <div style={{ height: 3, background: 'rgba(30,58,138,0.3)', borderRadius: 2, marginBottom: '1rem', overflow: 'hidden' }}>
           <div style={{ height: '100%', borderRadius: 2, background: '#FBBF24', width: `${((step + 1) / STEPS.length) * 100}%`, transition: 'width 0.4s ease' }} />
         </div>
 
-        {/* Etapas */}
         <div style={{ transition: 'opacity 0.2s, transform 0.2s', opacity: anim ? 0 : 1, transform: anim ? `translateX(${dir * 24}px)` : 'translateX(0)' }}>
 
-          {/* ETAPA 0 */}
           {step === 0 && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               <AvatarUpload preview={avatarPreview} onFile={setAvatarPreview} />
@@ -283,7 +274,6 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
             </div>
           )}
 
-          {/* ETAPA 1 */}
           {step === 1 && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <Field label="Cargo / Função" error={erros.cargo}>
@@ -312,7 +302,6 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
             </div>
           )}
 
-          {/* ETAPA 2 */}
           {step === 2 && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <Field label="Habilidades" hint="Selecione os que domina">
@@ -363,7 +352,6 @@ export default function Cadastro({ onGoToLogin, isInternalAccess = false }) {
           )}
         </div>
 
-        {/* Ações */}
         <div style={{ display: 'flex', gap: 10, marginTop: '0.75rem' }}>
           {step > 0 && (
             <button type="button" onClick={goBack} style={{
