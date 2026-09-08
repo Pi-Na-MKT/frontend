@@ -1,39 +1,67 @@
-import React from 'react'
+import React, { useState } from 'react'
+import api from '../services/api'
 
-const EmpresaCard = ({ empresa, onClick }) => {
+export default function EmpresaCard({ empresa, onClick, onCalendarLinked }) {
+  const [loading, setLoading] = useState(false)
+
+  const linked = !!empresa.googleCalendarId
+
+  const handleCalendar = async (e) => {
+    e.stopPropagation()
+    if (linked || loading) return
+    setLoading(true)
+    try {
+      const { data } = await api.post(`/companies/${empresa.id}/calendar`)
+      onCalendarLinked?.(data)
+    } catch (err) {
+      alert(err.response?.data?.message || 'Erro ao vincular Google Calendar.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <div
       onClick={() => onClick(empresa)}
-      className="bg-white rounded-2xl p-5 border border-gray-100 hover:border-primary/30 hover:shadow-md transition-all cursor-pointer group"
+      className="bg-white rounded-2xl border border-gray-100 p-6 cursor-pointer group card-hover"
     >
-      {/* Header */}
-      <div className="flex items-center gap-4 mb-4">
-        <div className={`${empresa.cor} w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-sm flex-shrink-0`}>
+      <div className="flex items-center gap-4">
+        <div className={`${empresa.cor} w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold text-base shadow-sm flex-shrink-0`}>
           {empresa.inicial}
         </div>
-        <div>
-          <h3 className="font-semibold text-gray-900 group-hover:text-primary transition-colors">{empresa.nome}</h3>
-          <p className="text-sm text-gray-500">Campanhas ativas: {empresa.campanhasAtivas}</p>
+        <div className="flex-1 min-w-0">
+          <h3 className="font-semibold text-gray-900 text-base group-hover:text-primary transition-colors truncate">{empresa.nome}</h3>
+          <p className="text-sm text-gray-400 mt-0.5">
+            {empresa.slug || 'Clique para abrir o board'}
+          </p>
         </div>
-      </div>
 
-      {/* Stats */}
-      <div className="flex items-center gap-5 text-sm text-gray-500">
-        <div className="flex items-center gap-1.5">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-          </svg>
-          <span>{empresa.tarefas} tarefas</span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-          </svg>
-          <span>{empresa.campanhas} campanhas</span>
-        </div>
+        <button
+          onClick={handleCalendar}
+          disabled={linked || loading}
+          title={linked ? 'Calendário vinculado ao Google Calendar' : 'Criar calendário no Google Calendar'}
+          className={`p-2 rounded-xl flex items-center justify-center transition-all flex-shrink-0 ${
+            linked
+              ? 'bg-emerald-50 text-emerald-500 cursor-default'
+              : 'bg-gray-50 text-gray-400 hover:bg-blue-50 hover:text-blue-500'
+          }`}
+        >
+          {loading ? (
+            <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+            </svg>
+          ) : (
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+            </svg>
+          )}
+        </button>
+
+        <svg className="w-4 h-4 text-gray-300 group-hover:text-primary transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/>
+        </svg>
       </div>
     </div>
   )
 }
-
-export default EmpresaCard
