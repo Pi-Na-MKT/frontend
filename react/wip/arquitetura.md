@@ -54,7 +54,7 @@ src/
 ### Exemplos de Renomeação
 
 ```
-src/components/TaskCard.jsx      ✅ (já correto)
+src/components/TarefaCard.jsx      ✅ (já correto)
 src/components/EmpresaCard.jsx     ✅ (já correto)
 src/components/Modal.jsx           ✅ (já correto)
 src/context/AuthContext.jsx        ✅ (já correto)
