@@ -1,6 +1,6 @@
 import React from 'react'
 import TaskCard from './TaskCard'
-import UserAvatar from './UserAvatar'
+import UserAvatar from '../users/UserAvatar'
 
 export default function KanbanColumn({
   col,

@@ -9,9 +9,9 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts'
-import Spinner from '../components/Spinner'
-import { useAuth } from '../context/AuthContext'
-import api from '../services/api'
+import Spinner from '../../shared/components/Spinner'
+import { useAuth } from '../../context/AuthContext'
+import api from '../../shared/api/api'
 
 // ── KPI card ─────────────────────────────────────────────────────────────────
 function KPI({ label, valor, sub, cor = 'text-gray-900', icon }) {

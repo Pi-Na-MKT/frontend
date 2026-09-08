@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import api from '../services/api'
+import api from '../../shared/api/api'
 
 export function useDragDrop(columns, cardsByColumn, onDragEnd) {
   const [draggedCard, setDraggedCard] = useState(null)

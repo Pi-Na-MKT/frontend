@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import EmpresaCard from '../components/EmpresaCard'
-import Modal from '../components/Modal'
-import Spinner from '../components/Spinner'
-import { useAuth } from '../context/AuthContext'
-import api from '../services/api'
+import EmpresaCard from './EmpresaCard'
+import Modal from '../../shared/components/Modal'
+import Spinner from '../../shared/components/Spinner'
+import { useAuth } from '../../context/AuthContext'
+import api from '../../shared/api/api'
 
 const toSlug = (name) =>
   name

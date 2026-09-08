@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import Modal from './Modal'
-import Spinner from './Spinner'
-import UserAvatar from './UserAvatar'
-import api from '../services/api'
+import Modal from '../../shared/components/Modal'
+import Spinner from '../../shared/components/Spinner'
+import UserAvatar from '../../features/users/UserAvatar'
+import api from '../../shared/api/api'
 
 // opções de prioridade - talvez mover pra constants depois
 const PRIORITY_OPTIONS = [

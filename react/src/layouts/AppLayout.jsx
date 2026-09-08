@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
-import Spinner from '../components/Spinner'
-import AvatarNeutro from '../components/AvatarNeutro'
+import Spinner from '../shared/components/Spinner'
+import AvatarNeutro from '../shared/components/AvatarNeutro'
 import { useAuth } from '../context/AuthContext'
 
 const topNavItems = [

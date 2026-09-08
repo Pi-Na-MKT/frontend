@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
-import ConfirmDialog from '../components/ConfirmDialog'
-import Spinner from '../components/Spinner'
-import { useAuth } from '../context/AuthContext'
-import api, { getErrorMessage } from '../services/api'
+import ConfirmDialog from '../../shared/components/ConfirmDialog'
+import Spinner from '../../shared/components/Spinner'
+import { useAuth } from '../../context/AuthContext'
+import api, { getErrorMessage } from '../../shared/api/api'
 
 const TIPOS = {
   pdf: {

@@ -1,0 +1,10 @@
+import api from '../../shared/api/api'
+
+export const companyService = {
+  getAll: () => api.get('/companies'),
+  getById: (id) => api.get(`/companies/${id}`),
+  create: (data) => api.post('/companies', data),
+  update: (id, data) => api.put(`/companies/${id}`, data),
+  delete: (id) => api.delete(`/companies/${id}`),
+  linkCalendar: (id) => api.post(`/companies/${id}/calendar`),
+}

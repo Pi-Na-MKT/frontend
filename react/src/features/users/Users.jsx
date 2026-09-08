@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
-import ConfirmDialog from '../components/ConfirmDialog'
-import Spinner from '../components/Spinner'
-import AvatarNeutro from '../components/AvatarNeutro'
-import { useAuth } from '../context/AuthContext'
-import api from '../services/api'
+import ConfirmDialog from '../../shared/components/ConfirmDialog'
+import Spinner from '../../shared/components/Spinner'
+import AvatarNeutro from '../../shared/components/AvatarNeutro'
+import { useAuth } from '../../context/AuthContext'
+import api from '../../shared/api/api'
 
 function UserAvatar({ user, className = 'w-9 h-9' }) {
   const src = user?.avatarUrl || user?.avatar

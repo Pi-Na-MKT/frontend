@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import api from '../services/api'
+import api from '../../shared/api/api'
 
 export function useBoard(companyId) {
   const [boards, setBoards] = useState([])

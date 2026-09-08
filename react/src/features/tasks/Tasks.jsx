@@ -1,11 +1,11 @@
 import React from 'react'
-import CardModal from '../components/CardModal'
-import KanbanColumn from '../components/KanbanColumn'
-import ConfirmDialog from '../components/ConfirmDialog'
-import Spinner from '../components/Spinner'
-import { useAuth } from '../context/AuthContext'
-import { useBoard } from '../hooks/useBoard'
-import { useDragDrop } from '../hooks/useDragDrop'
+import CardModal from './CardModal'
+import KanbanColumn from './KanbanColumn'
+import ConfirmDialog from '../../shared/components/ConfirmDialog'
+import Spinner from '../../shared/components/Spinner'
+import { useAuth } from '../../context/AuthContext'
+import { useBoard } from './useBoard'
+import { useDragDrop } from './useDragDrop'
 
 export default function Tarefas({ empresa, onBack, onDashboard }) {
   const { user, registeredUsers } = useAuth()

@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
 import { AuthProvider, useAuth } from './context/AuthContext'
-import Spinner from './components/Spinner'
-import Login from './pages/Login'
-import Register from './pages/Register'
-import Users from './pages/Users'
+import Spinner from './shared/components/Spinner'
+import Login from './features/login/Login'
+import Register from './features/register/Register'
+import Users from './features/users/Users'
 import AppLayout from './layouts/AppLayout'
-import Companies from './pages/Companies'
-import Tasks from './pages/Tasks'
-import Dashboard from './pages/Dashboard'
-import Attachments from './pages/Attachments'
+import Companies from './features/companies/Companies'
+import Tasks from './features/tasks/Tasks'
+import Dashboard from './features/dashboard/Dashboard'
+import Attachments from './features/attachments/Attachments'
 
 const PAGES = {
   COMPANIES: 'companies',
