@@ -2,9 +2,7 @@ import React, { useState, useEffect } from 'react'
 import EmpresaCard from './EmpresaCard'
 import Modal from '../../shared/components/Modal'
 import Spinner from '../../shared/components/Spinner'
-import Toast from '../../shared/components/Toast'
 import { useAuth } from '../../context/AuthContext'
-import { useToast } from '../../shared/hooks/useToast'
 import api from '../../shared/api/api'
 
 const toSlug = (name) =>
@@ -18,7 +16,6 @@ const toSlug = (name) =>
     .replace(/-+/g, '-')
 
 function NewCompanyModal({ onClose, onCreated }) {
-  const { showToast } = useToast()
   const [form, setForm] = useState({ nome: '', slug: '', active: true })
   const [slugManual, setSlugManual] = useState(false)
   const [error, setError] = useState('')
@@ -51,7 +48,6 @@ function NewCompanyModal({ onClose, onCreated }) {
         slug: form.slug.trim(),
         active: form.active,
       })
-      showToast('Empresa criada com sucesso!', 'success')
       onCreated(data)
     } catch (err) {
       setError(
@@ -59,7 +55,6 @@ function NewCompanyModal({ onClose, onCreated }) {
           err.response?.data?.message ||
           'Erro ao criar empresa.'
       )
-      showToast('Erro ao criar empresa.', 'error')
     } finally {
       setLoading(false)
     }
@@ -179,7 +174,6 @@ function NewCompanyModal({ onClose, onCreated }) {
 
 export default function Companies({ onCompanyClick }) {
   const { user, companies, fetchCompanies } = useAuth()
-  const { toast, showToast, hideToast } = useToast()
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(false)
   const [showModal, setShowModal] = useState(false)
@@ -291,14 +285,6 @@ export default function Companies({ onCompanyClick }) {
         <NewCompanyModal
           onClose={() => setShowModal(false)}
           onCreated={handleCreated}
-        />
-      )}
-
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={hideToast}
         />
       )}
     </div>

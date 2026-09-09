@@ -14,17 +14,6 @@
     color: #1a1d23;
     -webkit-font-smoothing: antialiased;
   }
-  
-  /* Acessibilidade: melhor indicador de foco */
-  *:focus-visible {
-    outline: 2px solid #5B4FE8;
-    outline-offset: 2px;
-  }
-  
-  /* Remover outline quando não está focado */
-  button:focus:not(:focus-visible) {
-    outline: none;
-  }
 }
 
 @layer components {
@@ -163,19 +152,4 @@
 }
 .kanban-col {
   scroll-snap-align: start;
-}
-
-/* Spin animation for loading */
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-.animate-spin {
-  animation: spin 0.8s linear infinite;
-}
-
-/* Placeholder color */
-input::placeholder {
-  color: #334155;
 }
