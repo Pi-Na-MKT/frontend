@@ -112,6 +112,8 @@ export default function TaskCard({
             setChecked(next)
             onToggleComplete?.(tarefa.id, next)
           }}
+          aria-label={checked ? 'Marcar como não concluída' : 'Marcar como concluída'}
+          aria-pressed={checked}
           className={`mt-0.5 w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
             checked
               ? 'bg-emerald-500 border-emerald-500'

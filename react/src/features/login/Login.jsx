@@ -37,43 +37,16 @@ export default function Login({ onGoToRegister }) {
   }
 
   return (
-    <div
-      style={{
-        fontFamily: "'Inter', system-ui, sans-serif",
-        background: '#0F172A',
-        minHeight: '100vh',
-      }}
-      className="w-full flex items-center justify-center relative overflow-hidden"
-    >
+    <div className="w-full flex items-center justify-center relative overflow-hidden font-sans bg-slate-900 min-h-screen">
       {/* Fundo: orbs sutis */}
       <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          pointerEvents: 'none',
-          background:
-            'radial-gradient(ellipse 80% 60% at 20% 10%, rgba(30,58,138,0.35) 0%, transparent 60%), radial-gradient(ellipse 60% 50% at 80% 90%, rgba(30,58,138,0.2) 0%, transparent 55%), radial-gradient(ellipse 40% 40% at 70% 20%, rgba(251,191,36,0.06) 0%, transparent 50%)',
-        }}
+        className="absolute inset-0 pointer-events-none bg-gradient-to-br from-blue-900/35 via-blue-900/20 to-yellow-500/6"
       />
-
+      
       {/* Grade de pontos */}
-      <svg
-        style={{
-          position: 'absolute',
-          inset: 0,
-          width: '100%',
-          height: '100%',
-          opacity: 0.06,
-          pointerEvents: 'none',
-        }}
-      >
+      <svg className="absolute inset-0 w-full h-full opacity-6 pointer-events-none">
         <defs>
-          <pattern
-            id="dots"
-            width="28"
-            height="28"
-            patternUnits="userSpaceOnUse"
-          >
+          <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
             <circle cx="1.5" cy="1.5" r="1.5" fill="#FBBF24" />
           </pattern>
         </defs>
@@ -81,41 +54,11 @@ export default function Login({ onGoToRegister }) {
       </svg>
 
       {/* Linha decorativa superior */}
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          height: '2px',
-          background:
-            'linear-gradient(90deg, transparent 0%, #1E3A8A 30%, #FBBF24 50%, #1E3A8A 70%, transparent 100%)',
-        }}
-      />
+      <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-blue-800 via-yellow-500 to-transparent" />
 
       {/* Logo + rodapé topo */}
-      <div
-        style={{
-          position: 'absolute',
-          top: '2rem',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px',
-        }}
-      >
-        <div
-          style={{
-            width: 32,
-            height: 32,
-            borderRadius: 8,
-            background: '#FBBF24',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
+      <div className="absolute top-8 left-1/2 -translate-x-1/2 flex items-center gap-2.5">
+        <div className="w-8 h-8 rounded-xl bg-yellow-400 flex items-center justify-center shadow-sm">
           <svg
             width="16"
             height="16"
@@ -129,96 +72,35 @@ export default function Login({ onGoToRegister }) {
             <path d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
         </div>
-        <span
-          style={{
-            color: '#fff',
-            fontWeight: 700,
-            fontSize: 18,
-            letterSpacing: '-0.02em',
-          }}
-        >
-          PINA
-        </span>
+        <span className="text-white font-bold text-lg tracking-tight">PINA</span>
       </div>
 
       {/* Card central */}
       <div
-        style={{
-          position: 'relative',
-          zIndex: 10,
-          width: '100%',
-          maxWidth: 400,
-          margin: '0 auto',
-          padding: '2.5rem',
-          background: 'rgba(15,23,42,0.7)',
-          border: '1px solid rgba(30,58,138,0.45)',
-          borderRadius: 20,
-          backdropFilter: 'blur(24px)',
-          WebkitBackdropFilter: 'blur(24px)',
-          boxShadow:
-            '0 0 0 1px rgba(251,191,36,0.04), 0 32px 80px rgba(0,0,0,0.5)',
-          opacity: mounted ? 1 : 0,
-          transform: mounted ? 'translateY(0)' : 'translateY(20px)',
-          transition: 'opacity 0.5s ease, transform 0.5s ease',
-        }}
+        className={`relative z-10 w-full max-w-md mx-auto p-10 bg-slate-900/70 border border-blue-800/45 rounded-2xl backdrop-blur-xl shadow-2xl opacity-0 translate-y-5 transition-all duration-500 ${
+          mounted ? 'opacity-100 translate-y-0' : ''
+        }`}
       >
         {/* Cabeçalho */}
-        <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
-          <p
-            style={{
-              fontSize: 12,
-              fontWeight: 600,
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              color: '#FBBF24',
-              marginBottom: 10,
-            }}
-          >
+        <div className="mb-8 text-center">
+          <p className="text-xs font-semibold tracking-widest uppercase text-yellow-400 mb-2.5">
             Gestão de Tarefas
           </p>
-          <h1
-            style={{
-              fontSize: 26,
-              fontWeight: 700,
-              color: '#fff',
-              letterSpacing: '-0.02em',
-              lineHeight: 1.2,
-              margin: 0,
-            }}
-          >
+          <h1 className="text-2xl font-bold text-white tracking-tight leading-tight">
             Acesse sua conta
           </h1>
-          <p style={{ marginTop: 8, fontSize: 13, color: '#64748B' }}>
+          <p className="mt-2 text-sm text-slate-500">
             Entre com suas credenciais para continuar
           </p>
         </div>
 
         {/* Divisor */}
-        <div
-          style={{
-            height: 1,
-            background: 'rgba(30,58,138,0.4)',
-            marginBottom: '1.75rem',
-          }}
-        />
+        <div className="h-px bg-blue-900/40 mb-7" />
 
-        <form
-          onSubmit={handleSubmit}
-          style={{ display: 'flex', flexDirection: 'column', gap: 16 }}
-        >
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {/* E-mail */}
           <div>
-            <label
-              style={{
-                display: 'block',
-                fontSize: 11,
-                fontWeight: 600,
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                color: '#64748B',
-                marginBottom: 8,
-              }}
-            >
+            <label className="block text-xs font-semibold tracking-wider uppercase text-slate-500 mb-2">
               E-mail
             </label>
             <input
@@ -229,62 +111,29 @@ export default function Login({ onGoToRegister }) {
               onBlur={() => setFocused(null)}
               placeholder="seu@email.com"
               autoComplete="email"
-              style={{
-                width: '100%',
-                boxSizing: 'border-box',
-                padding: '12px 16px',
-                borderRadius: 10,
-                fontSize: 14,
-                color: '#fff',
-                background:
-                  focused === 'email'
-                    ? 'rgba(30,58,138,0.2)'
-                    : 'rgba(30,58,138,0.08)',
-                border: `1.5px solid ${focused === 'email' ? 'rgba(30,58,138,0.9)' : 'rgba(30,58,138,0.35)'}`,
-                outline: 'none',
-                transition: 'all 0.2s',
-                fontFamily: 'inherit',
-              }}
+              aria-label="Endereço de e-mail"
+              className={`w-full p-3 rounded-xl text-sm text-white transition-all font-sans outline-none
+                ${focused === 'email' 
+                  ? 'bg-blue-900/20 border-2 border-blue-800/90' 
+                  : 'bg-blue-900/8 border-2 border-blue-900/35'
+                }`}
             />
           </div>
 
           {/* Senha */}
           <div>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: 8,
-              }}
-            >
-              <label
-                style={{
-                  fontSize: 11,
-                  fontWeight: 600,
-                  letterSpacing: '0.08em',
-                  textTransform: 'uppercase',
-                  color: '#64748B',
-                }}
-              >
+            <div className="flex justify-between items-center mb-2">
+              <label className="text-xs font-semibold tracking-wider uppercase text-slate-500">
                 Senha
               </label>
               <button
                 type="button"
-                style={{
-                  fontSize: 12,
-                  color: '#FBBF24',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  padding: 0,
-                  fontFamily: 'inherit',
-                }}
+                className="text-xs text-yellow-400 bg-transparent border-0 cursor-pointer p-0 font-sans"
               >
                 Esqueceu a senha?
               </button>
             </div>
-            <div style={{ position: 'relative' }}>
+            <div className="relative">
               <input
                 type={showPass ? 'text' : 'password'}
                 value={senha}
@@ -293,38 +142,18 @@ export default function Login({ onGoToRegister }) {
                 onBlur={() => setFocused(null)}
                 placeholder="••••••••"
                 autoComplete="current-password"
-                style={{
-                  width: '100%',
-                  boxSizing: 'border-box',
-                  padding: '12px 44px 12px 16px',
-                  borderRadius: 10,
-                  fontSize: 14,
-                  color: '#fff',
-                  background:
-                    focused === 'senha'
-                      ? 'rgba(30,58,138,0.2)'
-                      : 'rgba(30,58,138,0.08)',
-                  border: `1.5px solid ${focused === 'senha' ? 'rgba(30,58,138,0.9)' : 'rgba(30,58,138,0.35)'}`,
-                  outline: 'none',
-                  transition: 'all 0.2s',
-                  fontFamily: 'inherit',
-                }}
+                aria-label="Senha"
+                className={`w-full p-3 pr-11 rounded-xl text-sm text-white transition-all font-sans outline-none
+                  ${focused === 'senha' 
+                    ? 'bg-blue-900/20 border-2 border-blue-800/90' 
+                    : 'bg-blue-900/8 border-2 border-blue-900/35'
+                  }`}
               />
               <button
                 type="button"
                 onClick={() => setShowPass((v) => !v)}
-                style={{
-                  position: 'absolute',
-                  right: 14,
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  color: '#475569',
-                  padding: 0,
-                  display: 'flex',
-                }}
+                aria-label={showPass ? 'Ocultar senha' : 'Mostrar senha'}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 bg-transparent border-0 cursor-pointer text-slate-500 p-0 flex"
               >
                 {showPass ? (
                   <svg
@@ -360,19 +189,7 @@ export default function Login({ onGoToRegister }) {
 
           {/* Erro */}
           {erro && (
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 10,
-                padding: '10px 14px',
-                borderRadius: 10,
-                background: 'rgba(239,68,68,0.07)',
-                border: '1px solid rgba(239,68,68,0.18)',
-                color: '#f87171',
-                fontSize: 13,
-              }}
-            >
+            <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-red-500/7 border border-red-500/18 text-red-400 text-sm">
               <svg
                 width="15"
                 height="15"
@@ -380,7 +197,7 @@ export default function Login({ onGoToRegister }) {
                 stroke="currentColor"
                 strokeWidth="2"
                 viewBox="0 0 24 24"
-                style={{ flexShrink: 0 }}
+                className="flex-shrink-0"
               >
                 <path
                   strokeLinecap="round"
@@ -396,26 +213,11 @@ export default function Login({ onGoToRegister }) {
           <button
             type="submit"
             disabled={loading}
-            style={{
-              width: '100%',
-              padding: '13px',
-              borderRadius: 10,
-              fontSize: 14,
-              fontWeight: 700,
-              color: '#0F172A',
-              background: loading ? '#1E3A8A' : '#FBBF24',
-              border: 'none',
-              cursor: loading ? 'not-allowed' : 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 8,
-              boxShadow: loading ? 'none' : '0 4px 24px rgba(251,191,36,0.25)',
-              transition: 'all 0.2s',
-              fontFamily: 'inherit',
-              marginTop: 4,
-              opacity: loading ? 0.7 : 1,
-            }}
+            className={`w-full p-3 rounded-xl text-sm font-bold text-slate-900 border-0 flex items-center justify-center gap-2 transition-all font-sans mt-1
+              ${loading 
+                ? 'bg-blue-900 cursor-not-allowed opacity-70' 
+                : 'bg-yellow-400 cursor-pointer shadow-lg shadow-yellow-400/25'
+              }`}
           >
             {loading ? (
               <>
@@ -426,12 +228,12 @@ export default function Login({ onGoToRegister }) {
                   fill="none"
                   stroke="#fff"
                   strokeWidth="3"
-                  style={{ animation: 'spin 0.8s linear infinite' }}
+                  className="animate-spin"
                 >
                   <circle cx="12" cy="12" r="10" strokeOpacity="0.25" />
                   <path d="M4 12a8 8 0 018-8" stroke="#fff" />
                 </svg>
-                <span style={{ color: '#94A3B8' }}>Entrando...</span>
+                <span className="text-slate-400">Entrando...</span>
               </>
             ) : (
               'Entrar'
@@ -440,28 +242,12 @@ export default function Login({ onGoToRegister }) {
         </form>
 
         {onGoToRegister && (
-          <p
-            style={{
-              marginTop: '1.5rem',
-              textAlign: 'center',
-              fontSize: 13,
-              color: '#475569',
-            }}
-          >
+          <p className="mt-6 text-center text-sm text-slate-600">
             Não tem uma conta?{' '}
             <button
               type="button"
               onClick={onGoToRegister}
-              style={{
-                color: '#FBBF24',
-                fontWeight: 600,
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                padding: 0,
-                fontFamily: 'inherit',
-                fontSize: 13,
-              }}
+              className="text-yellow-400 font-semibold bg-transparent border-0 cursor-pointer p-0 font-sans text-sm"
             >
               Criar conta
             </button>
@@ -470,24 +256,9 @@ export default function Login({ onGoToRegister }) {
       </div>
 
       {/* Rodapé */}
-      <p
-        style={{
-          position: 'absolute',
-          bottom: '1.5rem',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          fontSize: 11,
-          color: '#1E3A8A',
-          whiteSpace: 'nowrap',
-        }}
-      >
+      <p className="absolute bottom-6 left-1/2 -translate-x-1/2 text-xs text-blue-900 whitespace-nowrap">
         © {new Date().getFullYear()} PiNa · Todos os direitos reservados
       </p>
-
-      <style>{`
-        @keyframes spin { to { transform: rotate(360deg); } }
-        input::placeholder { color: #334155; }
-      `}</style>
     </div>
   )
 }

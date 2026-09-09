@@ -3,12 +3,15 @@ import CardModal from './CardModal'
 import KanbanColumn from './KanbanColumn'
 import ConfirmDialog from '../../shared/components/ConfirmDialog'
 import Spinner from '../../shared/components/Spinner'
+import Toast from '../../shared/components/Toast'
 import { useAuth } from '../../context/AuthContext'
 import { useBoard } from './useBoard'
 import { useDragDrop } from './useDragDrop'
+import { useToast } from '../../shared/hooks/useToast'
 
 export default function Tarefas({ empresa, onBack, onDashboard }) {
   const { user, registeredUsers } = useAuth()
+  const { toast, showToast, hideToast } = useToast()
   const canManage = ['ADMIN', 'MANAGER'].includes(user?.role?.toUpperCase())
 
   // hook que gerencia toda a lógica do board
@@ -354,6 +357,14 @@ export default function Tarefas({ empresa, onBack, onDashboard }) {
             />
           )
         })()}
+
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={hideToast}
+        />
+      )}
     </div>
   )
 }
